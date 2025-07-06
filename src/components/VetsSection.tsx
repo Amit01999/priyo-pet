@@ -147,7 +147,7 @@
 // export default VetsSection;
 
 import React from 'react';
-import img from '../../public/doctor.jpg'; // Make sure you're using `next/image` in Next.js for optimization
+import img from '../../public/doctor.jpg';
 
 const VetsSection = () => {
   return (
