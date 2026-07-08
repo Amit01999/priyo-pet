@@ -10,18 +10,26 @@
  * vercel.json rewrites every path to this function while preserving the
  * original URL, so the Express app's /api/... routes match unchanged.
  */
+
+// Ensure production mode is set for all downstream env checks.
+process.env.NODE_ENV = process.env.NODE_ENV ?? 'production';
+
 import { connectDB } from '../dist/config/db.js';
 import { createApp } from '../dist/app.js';
 
+// Create the Express app once per warm container — safe because createApp()
+// is pure (no I/O, no DB calls). This is reused across all invocations in
+// the same Vercel sandbox.
 const app = createApp();
 
-// One connection (+ unique-index build, which the booking guarantees depend on)
-// per warm container, reused across invocations.
+// One DB connection (+ unique-index sync) per warm container.
+// Reset on failure so the next invocation retries instead of perpetually
+// serving from a broken connection.
 let dbReady = null;
 
 export default async function handler(req, res) {
   dbReady ??= connectDB().catch((err) => {
-    dbReady = null; // allow retry on the next invocation instead of caching a failure
+    dbReady = null;
     throw err;
   });
   await dbReady;
