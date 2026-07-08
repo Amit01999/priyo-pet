@@ -24,6 +24,12 @@ const CampaignHero = ({ campaign, content }: CampaignHeroProps) => {
       id="home"
       className="relative overflow-hidden bg-[#EFFDF0] pt-32 md:pt-40 pb-24 md:pb-32"
     >
+      {/* Background Image Pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-20 mix-blend-multiply bg-cover bg-center z-0"
+        style={{ backgroundImage: "url('/hero-bg.png')" }}
+      />
+
       {/* Decorative organic shapes */}
       <div
         aria-hidden
