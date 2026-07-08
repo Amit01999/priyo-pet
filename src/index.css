@@ -101,3 +101,165 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* HeroSection-only design system additions (see src/components/HeroSection.tsx).
+   Scoped as standalone utility classes so nothing here overrides the site-wide
+   fade-in/slide-in-right animations already defined in tailwind.config.ts. */
+@layer utilities {
+  .font-serif-display {
+    font-family: 'DM Serif Display', 'Noto Serif Bengali', serif;
+  }
+
+  .font-hero-inter {
+    font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-up {
+    animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes hero-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(60px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-slide-up {
+    animation: hero-slide-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes hero-slide-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  .animate-hero-slide-in-left {
+    animation: hero-slide-in-left 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes hero-slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  .animate-hero-slide-in-right {
+    animation: hero-slide-in-right 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes text-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(40px) skewY(3deg);
+      filter: blur(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) skewY(0);
+      filter: blur(0);
+    }
+  }
+  .animate-text-reveal {
+    animation: text-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes word-pop {
+    0% {
+      opacity: 0;
+      transform: translateY(60px) scale(0.7) rotate(-4deg);
+      filter: blur(8px);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(-6px) scale(1.03) rotate(0.5deg);
+      filter: blur(0);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(0);
+      filter: blur(0);
+    }
+  }
+  .animate-word-pop {
+    opacity: 0;
+    animation: word-pop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes hero-scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .animate-hero-scale-in {
+    animation: hero-scale-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes photo-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(80px) scale(1.02);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  .animate-photo-reveal {
+    animation: photo-reveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+  .delay-600 { animation-delay: 600ms; }
+  .delay-700 { animation-delay: 700ms; }
+  .delay-800 { animation-delay: 800ms; }
+  .delay-900 { animation-delay: 900ms; }
+  .delay-1000 { animation-delay: 1000ms; }
+  .delay-1100 { animation-delay: 1100ms; }
+  .delay-1200 { animation-delay: 1200ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up,
+    .animate-slide-up,
+    .animate-hero-slide-in-left,
+    .animate-hero-slide-in-right,
+    .animate-text-reveal,
+    .animate-word-pop,
+    .animate-hero-scale-in,
+    .animate-photo-reveal {
+      animation: none;
+      opacity: 1;
+    }
+  }
+}
