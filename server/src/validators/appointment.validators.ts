@@ -6,6 +6,7 @@ import {
   HEALTH_STATUSES,
   HEAR_ABOUT_OPTIONS,
   BOOKING_STATUS,
+  PAYMENT_STATUS,
 } from '../config/constants.js';
 import { isValidBdPhone, normalizeBdPhone } from '../utils/phone.js';
 
@@ -60,6 +61,16 @@ export const createAppointmentSchema = z.object({
   consentAcknowledged: z.literal(true, {
     errorMap: () => ({ message: 'You must agree to the consent terms to proceed' }),
   }),
+
+  // --- bKash payment verification (added beyond the source form) ---
+  paymentReference: z
+    .string()
+    .trim()
+    .min(4, 'সঠিক বিকাশ ট্রানজেকশন আইডি দিন')
+    .max(40, 'ট্রানজেকশন আইডি অনেক বড়'),
+  paymentConfirmedByUser: z.literal(true, {
+    errorMap: () => ({ message: 'অনুগ্রহ করে পেমেন্ট নিশ্চিত করুন' }),
+  }),
 });
 export type CreateAppointmentInput = z.infer<typeof createAppointmentSchema>;
 
@@ -71,6 +82,10 @@ export const updateStatusSchema = z.object({
   bookingStatus: z.enum(BOOKING_STATUS),
 });
 
+export const rejectPaymentSchema = z.object({
+  reason: z.string().trim().max(500).optional(),
+});
+
 export const updateNotesSchema = z.object({
   notes: z.string().trim().max(4000).default(''),
 });
@@ -80,6 +95,7 @@ export const listAppointmentsQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
   search: z.string().trim().optional(),
   status: z.enum(BOOKING_STATUS).optional(),
+  paymentStatus: z.enum(PAYMENT_STATUS).optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   sortBy: z.enum(['createdAt', 'appointmentDate', 'guardianName', 'bookingStatus']).default('createdAt'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
@@ -89,5 +105,6 @@ export type ListAppointmentsQuery = z.infer<typeof listAppointmentsQuerySchema>;
 export const exportQuerySchema = z.object({
   format: z.enum(['csv', 'xlsx']).default('csv'),
   status: z.enum(BOOKING_STATUS).optional(),
+  paymentStatus: z.enum(PAYMENT_STATUS).optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 });

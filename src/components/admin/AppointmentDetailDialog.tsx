@@ -9,10 +9,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import type { Appointment, BookingStatus } from '@/lib/api/types';
 import {
   ANIMAL_TYPE_OPTIONS,
@@ -23,7 +34,7 @@ import {
 } from '@/lib/validation/campaignFormSchema';
 import * as appointmentsApi from '@/lib/api/adminAppointments.api';
 import { getApiErrorMessage } from '@/lib/api/client';
-import { STATUS_BADGE_CLASSES } from './statusStyles';
+import { STATUS_BADGE_CLASSES, PAYMENT_STATUS_BADGE_CLASSES } from './statusStyles';
 
 function labelFor(options: readonly { value: string; label: string }[], value?: string): string {
   return options.find((o) => o.value === value)?.label ?? value ?? '—';
@@ -44,6 +55,9 @@ const STATUS_TRANSITIONS: Record<BookingStatus, BookingStatus[]> = {
 
 const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDetailDialogProps) => {
   const [notes, setNotes] = useState(appointment?.notes ?? '');
+  const [showRejectReason, setShowRejectReason] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+  const [downloadingTicket, setDownloadingTicket] = useState(false);
   const queryClient = useQueryClient();
 
   const invalidate = () => {
@@ -69,6 +83,54 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
     },
     onError: (err) => toast.error(getApiErrorMessage(err, 'Could not save notes')),
   });
+
+  const verifyPaymentMutation = useMutation({
+    mutationFn: () => appointmentsApi.verifyPayment(slug, appointment!._id),
+    onSuccess: () => {
+      toast.success('Payment verified — appointment confirmed');
+      invalidate();
+      onClose();
+    },
+    onError: (err) => toast.error(getApiErrorMessage(err, 'Could not verify payment')),
+  });
+
+  const rejectPaymentMutation = useMutation({
+    mutationFn: () => appointmentsApi.rejectPayment(slug, appointment!._id, rejectReason || undefined),
+    onSuccess: () => {
+      toast.success('Payment rejected — appointment cancelled');
+      invalidate();
+      onClose();
+    },
+    onError: (err) => toast.error(getApiErrorMessage(err, 'Could not reject payment')),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => appointmentsApi.deleteAppointment(slug, appointment!._id),
+    onSuccess: () => {
+      toast.success('Appointment deleted');
+      invalidate();
+      onClose();
+    },
+    onError: (err) => toast.error(getApiErrorMessage(err, 'Could not delete appointment')),
+  });
+
+  const handleDownloadTicket = async () => {
+    if (!appointment) return;
+    setDownloadingTicket(true);
+    try {
+      const blob = await appointmentsApi.fetchTicketPdf(slug, appointment._id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ticket-${appointment._id}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, 'Could not download ticket'));
+    } finally {
+      setDownloadingTicket(false);
+    }
+  };
 
   if (!appointment) return null;
 
@@ -114,6 +176,92 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
           ))}
         </div>
 
+        <div className="border border-gray-100 rounded-lg p-3 space-y-2 bg-gray-50/60">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-gray-700">Payment Information</span>
+            <Badge className={PAYMENT_STATUS_BADGE_CLASSES[appointment.paymentStatus]}>
+              {appointment.paymentStatus}
+            </Badge>
+          </div>
+          <div className="space-y-1.5 text-sm">
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+              <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">Method</span>
+              <span className="text-gray-800">{appointment.paymentMethod}</span>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+              <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">Amount</span>
+              <span className="text-gray-800">৳{appointment.paymentAmount}</span>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+              <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">Reference Number</span>
+              <span className="text-gray-800 break-words">{appointment.paymentReference}</span>
+            </div>
+            {appointment.verifiedAt && (
+              <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+                <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">Resolved At</span>
+                <span className="text-gray-800">{new Date(appointment.verifiedAt).toLocaleString()}</span>
+              </div>
+            )}
+            {appointment.paymentRejectionReason && (
+              <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+                <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">Rejection Reason</span>
+                <span className="text-gray-800 break-words">{appointment.paymentRejectionReason}</span>
+              </div>
+            )}
+          </div>
+
+          {appointment.paymentStatus === 'Pending Verification' && (
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <Button
+                size="sm"
+                className="bg-primary hover:bg-primary/90"
+                disabled={verifyPaymentMutation.isPending}
+                onClick={() => verifyPaymentMutation.mutate()}
+              >
+                {verifyPaymentMutation.isPending && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
+                Verify Payment
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                disabled={rejectPaymentMutation.isPending}
+                onClick={() => setShowRejectReason((v) => !v)}
+              >
+                Reject Payment
+              </Button>
+            </div>
+          )}
+
+          {showRejectReason && (
+            <div className="pt-1 space-y-2">
+              <Textarea
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                placeholder="Reason (optional) — included in the rejection email"
+                className="min-h-[60px] bg-white"
+              />
+              <Button
+                size="sm"
+                variant="destructive"
+                disabled={rejectPaymentMutation.isPending}
+                onClick={() => rejectPaymentMutation.mutate()}
+              >
+                {rejectPaymentMutation.isPending && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
+                Confirm Rejection
+              </Button>
+            </div>
+          )}
+
+          {appointment.paymentStatus === 'Verified' && (
+            <div className="pt-1">
+              <Button size="sm" variant="outline" disabled={downloadingTicket} onClick={handleDownloadTicket}>
+                {downloadingTicket && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
+                Download Ticket PDF
+              </Button>
+            </div>
+          )}
+        </div>
+
         <div>
           <label className="text-sm font-semibold text-gray-700 mb-1.5 block">Admin Notes</label>
           <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="min-h-[80px]" />
@@ -129,19 +277,54 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
           </Button>
         </div>
 
-        <DialogFooter className="flex-row flex-wrap gap-2 sm:justify-start">
-          {availableTransitions.map((status) => (
-            <Button
-              key={status}
-              size="sm"
-              disabled={statusMutation.isPending}
-              variant={status === 'Cancelled' ? 'destructive' : 'default'}
-              className={status !== 'Cancelled' ? 'bg-primary hover:bg-primary/90' : ''}
-              onClick={() => statusMutation.mutate(status)}
-            >
-              Mark as {status}
-            </Button>
-          ))}
+        <DialogFooter className="flex-row flex-wrap gap-2 sm:justify-between">
+          <div className="flex flex-wrap gap-2">
+            {availableTransitions.map((status) => (
+              <Button
+                key={status}
+                size="sm"
+                disabled={statusMutation.isPending}
+                variant={status === 'Cancelled' ? 'destructive' : 'default'}
+                className={status !== 'Cancelled' ? 'bg-primary hover:bg-primary/90' : ''}
+                onClick={() => statusMutation.mutate(status)}
+              >
+                Mark as {status}
+              </Button>
+            ))}
+          </div>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button size="sm" variant="destructive" disabled={deleteMutation.isPending}>
+                {deleteMutation.isPending ? (
+                  <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                ) : (
+                  <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+                )}
+                Delete Appointment
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete this appointment permanently?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This removes {appointment.guardianName}'s appointment for {appointment.petName} completely —
+                  it disappears from the list, dashboard stats, and exports, and its slot ({appointment.appointmentDate}
+                  {' '}at {appointment.appointmentTime}) immediately becomes bookable by someone else. This cannot be
+                  undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  onClick={() => deleteMutation.mutate()}
+                >
+                  Delete Permanently
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </DialogFooter>
       </DialogContent>
     </Dialog>

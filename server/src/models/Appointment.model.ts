@@ -7,6 +7,8 @@ import {
   HEAR_ABOUT_OPTIONS,
   BOOKING_STATUS,
   APPOINTMENT_SOURCE,
+  PAYMENT_STATUS,
+  PAYMENT_METHODS,
 } from '../config/constants.js';
 
 const appointmentSchema = new Schema(
@@ -45,6 +47,17 @@ const appointmentSchema = new Schema(
     /** true unless bookingStatus === 'Cancelled'. Kept in lockstep in the same update call —
      *  partial-filter indexes can't express `$ne`, only equality, so this is the workaround. */
     isActive: { type: Boolean, default: true },
+
+    // --- bKash payment verification (added beyond the source form) ---
+    paymentMethod: { type: String, enum: PAYMENT_METHODS, required: true, default: 'bKash' },
+    paymentAmount: { type: Number, required: true }, // server-stamped constant, never client-suppliable
+    paymentReference: { type: String, required: true, trim: true },
+    /** User's attestation that they sent the money — same audit-trail role as consentAcknowledged. */
+    paymentConfirmedByUser: { type: Boolean, required: true },
+    paymentStatus: { type: String, enum: PAYMENT_STATUS, default: 'Pending Verification' },
+    verifiedBy: { type: Schema.Types.ObjectId, ref: 'Admin' },
+    verifiedAt: { type: Date },
+    paymentRejectionReason: { type: String, trim: true },
   },
   { timestamps: true }
 );
@@ -65,8 +78,25 @@ appointmentSchema.index(
   }
 );
 
+// Prevents payment-reference reuse: a real bKash transaction id colliding across two active
+// bookings in the same campaign is almost always reuse/error, so this hard-blocks it (409),
+// same mechanism as the two indexes above. `paymentReference: { $exists: true }` is required
+// in the filter (not just `isActive: true`) because this field was added after appointments
+// already existed in production — older documents don't have it at all, and without this
+// extra condition Mongo treats every one of those missing values as an equal `null`, which
+// collides under a unique index the moment there's more than one.
+appointmentSchema.index(
+  { campaignId: 1, paymentReference: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { isActive: true, paymentReference: { $exists: true } },
+    collation: { locale: 'en', strength: 2 },
+  }
+);
+
 appointmentSchema.index({ campaignId: 1, appointmentDate: 1 });
 appointmentSchema.index({ campaignId: 1, bookingStatus: 1 });
+appointmentSchema.index({ campaignId: 1, paymentStatus: 1 });
 appointmentSchema.index({ guardianName: 'text', petName: 'text', mobileNumber: 'text' });
 
 export interface AppointmentDoc {
@@ -95,6 +125,14 @@ export interface AppointmentDoc {
   notes: string;
   source: string;
   isActive: boolean;
+  paymentMethod: string;
+  paymentAmount: number;
+  paymentReference: string;
+  paymentConfirmedByUser: boolean;
+  paymentStatus: string;
+  verifiedBy?: Types.ObjectId;
+  verifiedAt?: Date;
+  paymentRejectionReason?: string;
   createdAt: Date;
   updatedAt: Date;
 }

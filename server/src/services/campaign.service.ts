@@ -1,7 +1,8 @@
 import { Campaign, type CampaignDoc } from '../models/Campaign.model.js';
 import { NotFound, Conflict, BadRequest } from '../errors/httpErrors.js';
-import { ERROR_CODES } from '../config/constants.js';
+import { ERROR_CODES, PAYMENT_AMOUNT_BDT } from '../config/constants.js';
 import { addMinutes, dhakaDateTimeToUtc } from '../config/timezone.js';
+import { env } from '../config/env.js';
 
 export async function getCampaignBySlug(slug: string): Promise<CampaignDoc> {
   const campaign = await Campaign.findOne({ slug, isActive: true }).lean<CampaignDoc>();
@@ -43,6 +44,11 @@ export function toPublicCampaignView(campaign: CampaignDoc) {
     dayStatus: dayStatusToObject(campaign.dayStatus),
     registrationOpensAt: campaign.registrationOpensAt,
     registrationClosesAt: campaign.registrationClosesAt,
+    paymentInfo: {
+      method: 'bKash' as const,
+      bkashNumber: env.BKASH_MERCHANT_NUMBER ?? '',
+      amountBdt: PAYMENT_AMOUNT_BDT,
+    },
   };
 }
 

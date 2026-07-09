@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ChevronLeft, ChevronRight, Loader2, Calendar } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, ChevronRight, Loader2, Calendar, Mail } from 'lucide-react';
 import {
   appointmentFormSchema,
   appointmentFormDefaultValues,
@@ -20,6 +20,7 @@ import StepPetInfo from './StepPetInfo';
 import StepHealthInfo from './StepHealthInfo';
 import StepSchedule from './StepSchedule';
 import StepReviewConsent from './StepReviewConsent';
+import StepPayment from './StepPayment';
 
 interface AppointmentFormProps {
   campaign: PublicCampaign;
@@ -32,6 +33,7 @@ const STEPS: { id: string; title: string; fields: (keyof AppointmentFormValues)[
   { id: 'health', title: 'স্বাস্থ্য', fields: ['previousVaccinationInfo', 'currentHealthStatus'] },
   { id: 'schedule', title: 'সময়', fields: ['appointmentDate', 'slotNumber', 'hearAboutCampaign'] },
   { id: 'review', title: 'সম্মতি', fields: ['consentAcknowledged'] },
+  { id: 'payment', title: 'পেমেন্ট', fields: ['paymentReference', 'paymentConfirmedByUser'] },
 ];
 
 const AppointmentForm = ({ campaign, content }: AppointmentFormProps) => {
@@ -71,6 +73,8 @@ const AppointmentForm = ({ campaign, content }: AppointmentFormProps) => {
         hearAboutCampaign: values.hearAboutCampaign,
         slotNumber: values.slotNumber,
         consentAcknowledged: true,
+        paymentReference: values.paymentReference,
+        paymentConfirmedByUser: true,
       });
     },
     onSuccess: (data) => {
@@ -124,6 +128,15 @@ const AppointmentForm = ({ campaign, content }: AppointmentFormProps) => {
           {formatBengaliDayMonth(successData.date)}, {formatBengaliTime(successData.time)} (স্লট #
           {toBengaliDigits(successData.slotNumber)})
         </div>
+
+        <div className="mt-7 flex items-start gap-3 bg-[#F7FFF8] border border-[#1a3d1a]/[0.08] rounded-[16px] p-4 text-left">
+          <Mail className="w-5 h-5 text-[#E86A10] flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-[#1a3d1a]/70 leading-relaxed">
+            আপনার ইমেইলে একটি নিশ্চিতকরণ বার্তা পাঠানো হয়েছে, অনুগ্রহ করে ইমেইল চেক করুন। পেমেন্ট যাচাই হওয়ার পর
+            (সাধারণত ২৪ ঘণ্টার মধ্যে) আরেকটি ইমেইলে আপনার অ্যাপয়েন্টমেন্ট টিকিট (PDF) পাঠানো হবে — সেটি ডাউনলোড
+            করে সাথে নিয়ে আসুন।
+          </p>
+        </div>
       </div>
     );
   }
@@ -170,6 +183,7 @@ const AppointmentForm = ({ campaign, content }: AppointmentFormProps) => {
           {stepIndex === 2 && <StepHealthInfo />}
           {stepIndex === 3 && <StepSchedule campaign={campaign} />}
           {stepIndex === 4 && <StepReviewConsent content={content} selectedSlotTime={selectedSlotTime} />}
+          {stepIndex === 5 && <StepPayment campaign={campaign} />}
 
           <div className="flex items-center justify-between pt-6 border-t border-[#1a3d1a]/[0.08]">
             <Button

@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 import type { Appointment } from '@/lib/api/types';
-import { STATUS_BADGE_CLASSES } from './statusStyles';
+import { STATUS_BADGE_CLASSES, PAYMENT_STATUS_BADGE_CLASSES } from './statusStyles';
 
 interface AppointmentsTableProps {
   appointments: Appointment[];
@@ -26,6 +26,7 @@ const AppointmentsTable = ({ appointments, onView }: AppointmentsTableProps) => 
             <TableHead>Date</TableHead>
             <TableHead>Time</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Payment</TableHead>
             <TableHead>Submitted</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -40,6 +41,11 @@ const AppointmentsTable = ({ appointments, onView }: AppointmentsTableProps) => 
               <TableCell>{appointment.appointmentTime}</TableCell>
               <TableCell>
                 <Badge className={STATUS_BADGE_CLASSES[appointment.bookingStatus]}>{appointment.bookingStatus}</Badge>
+              </TableCell>
+              <TableCell>
+                <Badge className={PAYMENT_STATUS_BADGE_CLASSES[appointment.paymentStatus]}>
+                  {appointment.paymentStatus}
+                </Badge>
               </TableCell>
               <TableCell className="text-gray-500 text-sm">
                 {new Date(appointment.createdAt).toLocaleDateString()}

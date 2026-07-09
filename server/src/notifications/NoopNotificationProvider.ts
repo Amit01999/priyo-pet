@@ -29,6 +29,27 @@ export class NoopNotificationProvider implements NotificationProvider {
       // never let a notification failure affect the booking flow
     }
   }
-}
 
-export const notificationProvider: NotificationProvider = new NoopNotificationProvider();
+  async sendPaymentVerified(appointment: AppointmentDoc): Promise<void> {
+    try {
+      logger.info('Notification (payment verified) — no provider configured', {
+        appointmentId: String(appointment._id),
+        email: appointment.email,
+      });
+    } catch {
+      // never let a notification failure affect the booking flow
+    }
+  }
+
+  async sendPaymentRejected(appointment: AppointmentDoc, reason?: string): Promise<void> {
+    try {
+      logger.info('Notification (payment rejected) — no provider configured', {
+        appointmentId: String(appointment._id),
+        email: appointment.email,
+        reason,
+      });
+    } catch {
+      // never let a notification failure affect the booking flow
+    }
+  }
+}

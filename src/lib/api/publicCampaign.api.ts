@@ -31,6 +31,8 @@ export interface SubmitAppointmentPayload {
   hearAboutCampaign: string;
   slotNumber: number;
   consentAcknowledged: true;
+  paymentReference: string;
+  paymentConfirmedByUser: true;
 }
 
 export interface SubmitAppointmentResult {

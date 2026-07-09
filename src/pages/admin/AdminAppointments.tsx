@@ -16,16 +16,18 @@ import AppointmentsTable from '@/components/admin/AppointmentsTable';
 import AppointmentDetailDialog from '@/components/admin/AppointmentDetailDialog';
 import { useAdminCampaign } from '@/contexts/AdminCampaignContext';
 import * as appointmentsApi from '@/lib/api/adminAppointments.api';
-import type { Appointment, BookingStatus } from '@/lib/api/types';
+import type { Appointment, BookingStatus, PaymentStatus } from '@/lib/api/types';
 import { getApiErrorMessage } from '@/lib/api/client';
 
 const STATUS_FILTERS: (BookingStatus | 'all')[] = ['all', 'Pending', 'Confirmed', 'Cancelled', 'Completed'];
+const PAYMENT_STATUS_FILTERS: (PaymentStatus | 'all')[] = ['all', 'Pending Verification', 'Verified', 'Rejected'];
 
 const AdminAppointments = () => {
   const { selectedSlug } = useAdminCampaign();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<BookingStatus | 'all'>('all');
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus | 'all'>('all');
   const [dateFilter, setDateFilter] = useState('');
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [exporting, setExporting] = useState(false);
@@ -36,6 +38,7 @@ const AdminAppointments = () => {
     limit: 20,
     search: search || undefined,
     status: status === 'all' ? undefined : status,
+    paymentStatus: paymentStatus === 'all' ? undefined : paymentStatus,
     date: dateFilter || undefined,
   };
 
@@ -84,7 +87,7 @@ const AdminAppointments = () => {
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
-            placeholder="Search by name, phone, or pet..."
+            placeholder="Search by name, phone, pet, or payment reference..."
             className="pl-9"
             value={search}
             onChange={(e) => {
@@ -107,6 +110,24 @@ const AdminAppointments = () => {
             {STATUS_FILTERS.map((s) => (
               <SelectItem key={s} value={s}>
                 {s === 'all' ? 'All statuses' : s}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={paymentStatus}
+          onValueChange={(value) => {
+            setPaymentStatus(value as PaymentStatus | 'all');
+            setPage(1);
+          }}
+        >
+          <SelectTrigger className="w-48">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {PAYMENT_STATUS_FILTERS.map((s) => (
+              <SelectItem key={s} value={s}>
+                {s === 'all' ? 'All payment statuses' : s}
               </SelectItem>
             ))}
           </SelectContent>

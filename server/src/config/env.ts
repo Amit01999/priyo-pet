@@ -13,6 +13,17 @@ const envSchema = z.object({
   SEED_ADMIN_NAME: z.string().optional(),
   SEED_ADMIN_EMAIL: z.string().email().optional(),
   SEED_ADMIN_PASSWORD: z.string().min(8).optional(),
+
+  // Transactional email (Nodemailer). All optional: absent in dev/test just falls back to the
+  // console-only NoopNotificationProvider (see notifications/index.ts) instead of failing boot.
+  MAIL_HOST: z.string().optional(),
+  MAIL_PORT: z.coerce.number().int().positive().optional(),
+  MAIL_USER: z.string().optional(),
+  MAIL_PASS: z.string().optional(),
+  MAIL_FROM: z.string().optional(),
+
+  // Manual bKash "Send Money" verification — no payment gateway integration yet.
+  BKASH_MERCHANT_NUMBER: z.string().optional(),
 });
 
 function loadEnv() {

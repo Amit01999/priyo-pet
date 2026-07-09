@@ -10,9 +10,14 @@ import {
   computeSlotTime,
 } from './campaign.service.js';
 import { Conflict, NotFound, BadRequest } from '../errors/httpErrors.js';
-import { ERROR_CODES, type AppointmentSource, type BookingStatus } from '../config/constants.js';
+import {
+  ERROR_CODES,
+  PAYMENT_AMOUNT_BDT,
+  type AppointmentSource,
+  type BookingStatus,
+} from '../config/constants.js';
 import { buildPageResult, type PageResult } from '../utils/pagination.js';
-import { notificationProvider } from '../notifications/NoopNotificationProvider.js';
+import { notificationProvider } from '../notifications/index.js';
 
 const CONSENT_TEXT_VERSION = 1;
 
@@ -79,6 +84,11 @@ export async function createAppointment(
       bookingStatus: 'Pending',
       source: options.source,
       isActive: true,
+      paymentMethod: 'bKash',
+      paymentAmount: PAYMENT_AMOUNT_BDT,
+      paymentReference: input.paymentReference,
+      paymentConfirmedByUser: input.paymentConfirmedByUser,
+      paymentStatus: 'Pending Verification',
     });
 
     if (!campaign.slotDurationLocked) {
@@ -104,6 +114,12 @@ function mapDuplicateKeyError(err: unknown): Error {
         ERROR_CODES.DUPLICATE_APPOINTMENT
       );
     }
+    if (mongoErr.keyPattern && 'paymentReference' in mongoErr.keyPattern) {
+      return Conflict(
+        'This bKash reference number has already been used on another active appointment.',
+        ERROR_CODES.DUPLICATE_PAYMENT_REFERENCE
+      );
+    }
     return Conflict('This appointment could not be booked due to a conflict.', ERROR_CODES.SLOT_TAKEN);
   }
   return err as Error;
@@ -115,12 +131,14 @@ export async function listAppointments(
 ): Promise<PageResult<AppointmentDoc>> {
   const filter: Record<string, unknown> = { campaignId };
   if (query.status) filter.bookingStatus = query.status;
+  if (query.paymentStatus) filter.paymentStatus = query.paymentStatus;
   if (query.date) filter.appointmentDate = query.date;
   if (query.search) {
     filter.$or = [
       { guardianName: { $regex: escapeRegex(query.search), $options: 'i' } },
       { petName: { $regex: escapeRegex(query.search), $options: 'i' } },
       { mobileNumber: { $regex: escapeRegex(query.search), $options: 'i' } },
+      { paymentReference: { $regex: escapeRegex(query.search), $options: 'i' } },
     ];
   }
 

@@ -11,6 +11,7 @@ export type HearAboutOption =
   | 'other';
 export type BookingStatus = 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
 export type SlotStatus = 'available' | 'booked' | 'blocked' | 'past';
+export type PaymentStatus = 'Pending Verification' | 'Verified' | 'Rejected';
 
 export interface PublicCampaign {
   slug: string;
@@ -26,6 +27,11 @@ export interface PublicCampaign {
   dayStatus: Record<string, 'open' | 'closed'>;
   registrationOpensAt: string;
   registrationClosesAt: string;
+  paymentInfo: {
+    method: 'bKash';
+    bkashNumber: string;
+    amountBdt: number;
+  };
 }
 
 export interface SlotView {
@@ -66,6 +72,14 @@ export interface Appointment {
   bookingStatus: BookingStatus;
   notes: string;
   source: 'public' | 'admin-walkin';
+  paymentMethod: 'bKash';
+  paymentAmount: number;
+  paymentReference: string;
+  paymentConfirmedByUser: boolean;
+  paymentStatus: PaymentStatus;
+  verifiedBy?: string;
+  verifiedAt?: string;
+  paymentRejectionReason?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -81,6 +95,7 @@ export interface PageResult<T> {
 export interface DashboardStats {
   totalApplications: number;
   byStatus: Record<BookingStatus, number>;
+  byPaymentStatus: Record<PaymentStatus, number>;
   todaysAppointments: number;
   today: string;
   dayBreakdown: { date: string; capacity: number; booked: number; blocked: number; remaining: number }[];

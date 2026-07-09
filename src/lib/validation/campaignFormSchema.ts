@@ -108,11 +108,23 @@ export const consentSchema = z.object({
   }),
 });
 
+export const paymentSchema = z.object({
+  paymentReference: z
+    .string()
+    .trim()
+    .min(4, 'সঠিক বিকাশ ট্রানজেকশন আইডি দিন')
+    .max(40, 'ট্রানজেকশন আইডি অনেক বড়'),
+  paymentConfirmedByUser: z.literal(true, {
+    errorMap: () => ({ message: 'অনুগ্রহ করে পেমেন্ট নিশ্চিত করুন' }),
+  }),
+});
+
 export const appointmentFormSchema = guardianInfoSchema
   .merge(petInfoSchema)
   .merge(healthInfoSchema)
   .merge(scheduleSchema)
-  .merge(consentSchema);
+  .merge(consentSchema)
+  .merge(paymentSchema);
 
 export type AppointmentFormValues = z.infer<typeof appointmentFormSchema>;
 
@@ -130,4 +142,6 @@ export const appointmentFormDefaultValues: Partial<AppointmentFormValues> = {
   appointmentDate: '',
   slotNumber: undefined,
   consentAcknowledged: undefined,
+  paymentReference: '',
+  paymentConfirmedByUser: undefined,
 };

@@ -1,5 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { Loader2, Users, Clock3, CheckCircle2, XCircle, CalendarCheck, Ban } from 'lucide-react';
+import {
+  Loader2,
+  Users,
+  Clock3,
+  CheckCircle2,
+  XCircle,
+  CalendarCheck,
+  Ban,
+  Wallet,
+  ShieldCheck,
+  ShieldX,
+  TicketCheck,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import StatCard from '@/components/admin/StatCard';
 import { useAdminCampaign } from '@/contexts/AdminCampaignContext';
@@ -23,6 +35,8 @@ const AdminDashboard = () => {
     );
   }
 
+  const remainingSlots = data.dayBreakdown.reduce((sum, day) => sum + day.remaining, 0);
+
   return (
     <div className="space-y-6">
       <h1 className="font-poppins font-bold text-2xl text-gray-800">Dashboard</h1>
@@ -30,10 +44,19 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Total Applications" value={data.totalApplications} icon={Users} accent="primary" />
         <StatCard label="Pending" value={data.byStatus.Pending ?? 0} icon={Clock3} accent="secondary" />
-        <StatCard label="Confirmed" value={data.byStatus.Confirmed ?? 0} icon={CheckCircle2} accent="accent" />
+        <StatCard label="Approved Bookings" value={data.byStatus.Confirmed ?? 0} icon={CheckCircle2} accent="accent" />
         <StatCard label="Cancelled" value={data.byStatus.Cancelled ?? 0} icon={XCircle} accent="destructive" />
         <StatCard label="Completed" value={data.byStatus.Completed ?? 0} icon={CalendarCheck} accent="primary" />
         <StatCard label="Today's Appointments" value={data.todaysAppointments} icon={CalendarCheck} accent="secondary" />
+        <StatCard
+          label="Pending Verification"
+          value={data.byPaymentStatus['Pending Verification'] ?? 0}
+          icon={Wallet}
+          accent="secondary"
+        />
+        <StatCard label="Verified Payments" value={data.byPaymentStatus.Verified ?? 0} icon={ShieldCheck} accent="accent" />
+        <StatCard label="Rejected Payments" value={data.byPaymentStatus.Rejected ?? 0} icon={ShieldX} accent="destructive" />
+        <StatCard label="Remaining Slots" value={remainingSlots} icon={TicketCheck} accent="primary" />
       </div>
 
       <Card className="border-0 shadow-md">

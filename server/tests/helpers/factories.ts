@@ -36,7 +36,10 @@ export async function createTestAdmin(overrides: { email?: string; password?: st
   return { admin, email, password };
 }
 
+let paymentReferenceCounter = 0;
+
 export function validAppointmentPayload(overrides: Record<string, unknown> = {}) {
+  paymentReferenceCounter += 1;
   return {
     guardianName: 'Rahim Uddin',
     mobileNumber: '01712345678',
@@ -52,6 +55,10 @@ export function validAppointmentPayload(overrides: Record<string, unknown> = {})
     hearAboutCampaign: 'facebook',
     consentAcknowledged: true,
     slotNumber: 1,
+    // Unique per call by default so unrelated tests never collide on the paymentReference
+    // uniqueness index — override explicitly when a test specifically wants a collision.
+    paymentReference: `TEST-TXN-${paymentReferenceCounter}`,
+    paymentConfirmedByUser: true,
     ...overrides,
   };
 }

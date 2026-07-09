@@ -1,6 +1,19 @@
 export const BOOKING_STATUS = ['Pending', 'Confirmed', 'Cancelled', 'Completed'] as const;
 export type BookingStatus = (typeof BOOKING_STATUS)[number];
 
+/** Payment is verified manually (bKash Send Money) — no gateway integration yet.
+ *  'Verified' payment moves bookingStatus -> 'Confirmed'; 'Rejected' moves it -> 'Cancelled'
+ *  (see payment.service.ts) so the existing slot-freeing/isActive semantics apply for free. */
+export const PAYMENT_STATUS = ['Pending Verification', 'Verified', 'Rejected'] as const;
+export type PaymentStatus = (typeof PAYMENT_STATUS)[number];
+
+export const PAYMENT_METHODS = ['bKash'] as const;
+export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+
+/** Fixed campaign fee, server-stamped only — never client-suppliable (same pattern as
+ *  CONSENT_TEXT_VERSION in appointment.service.ts). */
+export const PAYMENT_AMOUNT_BDT = 70;
+
 export const ADMIN_ROLES = ['admin', 'superadmin'] as const;
 export type AdminRole = (typeof ADMIN_ROLES)[number];
 
@@ -53,6 +66,8 @@ export const ERROR_CODES = {
   DAY_CLOSED: 'DAY_CLOSED',
   REGISTRATION_CLOSED: 'REGISTRATION_CLOSED',
   DUPLICATE_APPOINTMENT: 'DUPLICATE_APPOINTMENT',
+  DUPLICATE_PAYMENT_REFERENCE: 'DUPLICATE_PAYMENT_REFERENCE',
+  PAYMENT_ALREADY_RESOLVED: 'PAYMENT_ALREADY_RESOLVED',
   INVALID_DATE: 'INVALID_DATE',
   ILLEGAL_STATUS_TRANSITION: 'ILLEGAL_STATUS_TRANSITION',
   CAPACITY_CONFLICT: 'CAPACITY_CONFLICT',

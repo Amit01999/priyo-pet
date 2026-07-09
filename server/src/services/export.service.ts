@@ -23,6 +23,11 @@ const COLUMNS: { key: keyof AppointmentDoc | 'animalTypeJoined'; header: string 
   { key: 'bookingStatus', header: 'Status' },
   { key: 'notes', header: 'Notes' },
   { key: 'source', header: 'Source' },
+  { key: 'paymentMethod', header: 'Payment Method' },
+  { key: 'paymentAmount', header: 'Payment Amount (BDT)' },
+  { key: 'paymentReference', header: 'Payment Reference' },
+  { key: 'paymentStatus', header: 'Payment Status' },
+  { key: 'verifiedAt', header: 'Payment Verified/Rejected At' },
   { key: 'createdAt', header: 'Submitted At' },
 ];
 
@@ -31,6 +36,7 @@ function toRow(appointment: AppointmentDoc): Record<string, unknown> {
     ...appointment,
     animalTypeJoined: appointment.animalType?.join(', '),
     createdAt: new Date(appointment.createdAt).toISOString(),
+    verifiedAt: appointment.verifiedAt ? new Date(appointment.verifiedAt).toISOString() : '',
   };
 }
 

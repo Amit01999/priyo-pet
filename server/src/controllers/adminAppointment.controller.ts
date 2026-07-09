@@ -4,6 +4,7 @@ import {
   adminCreateAppointmentSchema,
   exportQuerySchema,
   listAppointmentsQuerySchema,
+  rejectPaymentSchema,
   updateNotesSchema,
   updateStatusSchema,
 } from '../validators/appointment.validators.js';
@@ -15,8 +16,11 @@ import {
   updateAppointmentNotes,
   updateAppointmentStatus,
 } from '../services/appointment.service.js';
+import { verifyPayment, rejectPayment } from '../services/payment.service.js';
+import { generateTicketPdf } from '../services/pdf.service.js';
 import { buildCsv, buildXlsx } from '../services/export.service.js';
 import { Appointment, type AppointmentDoc } from '../models/Appointment.model.js';
+import { NotFound } from '../errors/httpErrors.js';
 
 export const list = asyncHandler(async (req: Request, res: Response) => {
   const query = listAppointmentsQuerySchema.parse(req.query);
@@ -50,6 +54,27 @@ export const updateNotes = asyncHandler(async (req: Request, res: Response) => {
 export const remove = asyncHandler(async (req: Request, res: Response) => {
   await deleteAppointment(req.params.id);
   res.status(200).json({ success: true, message: 'Appointment deleted' });
+});
+
+export const verifyPaymentHandler = asyncHandler(async (req: Request, res: Response) => {
+  const appointment = await verifyPayment(req.params.id, req.admin!.sub);
+  res.status(200).json({ success: true, message: 'Payment verified, appointment confirmed', data: appointment });
+});
+
+export const rejectPaymentHandler = asyncHandler(async (req: Request, res: Response) => {
+  const { reason } = rejectPaymentSchema.parse(req.body);
+  const appointment = await rejectPayment(req.params.id, req.admin!.sub, reason);
+  res.status(200).json({ success: true, message: 'Payment rejected, appointment cancelled', data: appointment });
+});
+
+export const getTicketPdf = asyncHandler(async (req: Request, res: Response) => {
+  const appointment = await Appointment.findById(req.params.id).lean<AppointmentDoc>();
+  if (!appointment) throw NotFound('Appointment not found');
+
+  const buffer = await generateTicketPdf(appointment, req.campaign!);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="ticket-${req.params.id}.pdf"`);
+  res.send(buffer);
 });
 
 export const exportAppointments = asyncHandler(async (req: Request, res: Response) => {
