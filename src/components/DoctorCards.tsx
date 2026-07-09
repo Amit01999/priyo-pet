@@ -111,7 +111,7 @@ const doctors = [
 
 export default function DoctorCards() {
   return (
-    <section className="bg-gradient-to-br from-gray-50 to-gray-100 py-5 pb-10">
+    <section id="vets" className="bg-gradient-to-br from-gray-50 to-gray-100 py-5 pb-10">
       {/* Header */}
       <div className="text-center mb-16 animate-fade-in">
         <h2 className="font-poppins font-bold text-3xl md:text-4xl text-gray-800 mb-6">
