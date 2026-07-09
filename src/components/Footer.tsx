@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Heart, Phone, MapPin, Clock } from 'lucide-react';
+import { Phone, MapPin, Clock } from 'lucide-react';
+import logo from '../../public/logo1.png';
 
 const Footer = () => {
   const services = [
@@ -37,14 +38,9 @@ const Footer = () => {
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-10">
           {/* Brand & Contact */}
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 bg-[#E86A10] rounded-full flex items-center justify-center shadow-md">
-                <Heart className="w-5 h-5 text-white" fill="currentColor" />
-              </div>
-              <div>
-                <h3 className="font-serif-display text-lg leading-tight">Priyo Pet & Vet Care</h3>
-                <p className="text-sm text-white/50">Khulna, Bangladesh</p>
-              </div>
+            <div>
+              <img src={logo} alt="Priyo Pet & Vet Care" className="h-16 w-auto rounded-lg" />
+              <p className="text-sm text-white/50 mt-2">Khulna, Bangladesh</p>
             </div>
 
             <p className="text-white/60 leading-relaxed">

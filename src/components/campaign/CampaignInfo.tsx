@@ -2,6 +2,7 @@ import { Check, ShieldCheck } from 'lucide-react';
 import { toBengaliDigits } from '@/lib/bengaliDate';
 import type { CampaignContent } from '@/content/campaigns/rabies-2026.content';
 import type { PublicCampaign } from '@/lib/api/types';
+import jciLogo from '../../assets/JCI Dhaka North.png';
 
 interface CampaignInfoProps {
   campaign: PublicCampaign;
@@ -47,7 +48,9 @@ const CampaignInfo = ({ campaign, content }: CampaignInfoProps) => {
                   <div className="w-6 h-6 rounded-full bg-[#1a3d1a] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
                     <Check className="w-3.5 h-3.5 text-white" />
                   </div>
-                  <span className="text-[#1a3d1a]/80 leading-relaxed">{item}</span>
+                  <span className="text-[#1a3d1a]/80 leading-relaxed">
+                    {item}
+                  </span>
                 </div>
               ))}
             </div>
@@ -60,13 +63,17 @@ const CampaignInfo = ({ campaign, content }: CampaignInfoProps) => {
                 <div className="font-serif-display text-4xl md:text-5xl">
                   {toBengaliDigits(campaign.maxSlotsPerDay)}
                 </div>
-                <div className="text-sm text-white/70 mt-2">দৈনিক স্লট সংখ্যা</div>
+                <div className="text-sm text-white/70 mt-2">
+                  দৈনিক স্লট সংখ্যা
+                </div>
               </div>
               <div className="bg-white rounded-[28px] border border-[#1a3d1a]/[0.06] shadow-[0_20px_50px_-15px_rgba(26,61,26,0.15)] p-7 md:p-8 text-center transition-all duration-500 hover:-translate-y-1.5 animate-fade-up delay-300">
                 <div className="font-serif-display text-4xl md:text-5xl text-[#1a3d1a]">
                   {toBengaliDigits(campaign.slotDurationMinutes)}
                 </div>
-                <div className="text-sm text-[#1a3d1a]/50 mt-2">মিনিট প্রতি অ্যাপয়েন্টমেন্ট</div>
+                <div className="text-sm text-[#1a3d1a]/50 mt-2">
+                  মিনিট প্রতি অ্যাপয়েন্টমেন্ট
+                </div>
               </div>
             </div>
             <div className="space-y-4 md:space-y-5 mt-10">
@@ -74,11 +81,19 @@ const CampaignInfo = ({ campaign, content }: CampaignInfoProps) => {
                 <div className="font-serif-display text-4xl md:text-5xl text-[#1a3d1a]">
                   {toBengaliDigits(campaign.dates.length)}
                 </div>
-                <div className="text-sm text-[#1a3d1a]/50 mt-2">দিনব্যাপী ক্যাম্পেইন</div>
+                <div className="text-sm text-[#1a3d1a]/50 mt-2">
+                  দিনব্যাপী ক্যাম্পেইন
+                </div>
               </div>
               <div className="bg-[#E86A10] rounded-[28px] shadow-[0_25px_60px_-15px_rgba(232,106,16,0.45)] p-7 md:p-8 text-white text-center transition-all duration-500 hover:-translate-y-1.5 animate-fade-up delay-500">
-                <div className="font-serif-display text-4xl md:text-5xl">৳০</div>
-                <div className="text-sm text-white/75 mt-2">সম্পূর্ণ বিনামূল্যে</div>
+                <img
+                  src={jciLogo}
+                  alt="JCI Dhaka North"
+                  className="h-16 md:h-20 w-auto mx-auto object-contain"
+                />
+                <div className="text-sm text-white/75 mt-2">
+                  ক্যাম্পেইন পৃষ্ঠপোষক
+                </div>
               </div>
             </div>
           </div>

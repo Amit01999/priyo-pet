@@ -22,13 +22,13 @@ const CampaignHero = ({ campaign, content }: CampaignHeroProps) => {
   return (
     <section
       id="home"
-      className="relative overflow-hidden bg-[#EFFDF0] pt-24 md:pt-28 pb-14 md:pb-16"
+      className="relative overflow-hidden bg-[#EFFDF0] pt-24 md:pt-28 pb-14 md:pb-20"
     >
       {/* Background Image Pattern */}
       <div
         aria-hidden
-        className="absolute inset-0 pointer-events-none opacity-20 mix-blend-multiply bg-cover bg-center z-0"
-        style={{ backgroundImage: "url('/hero-bg.png')" }}
+        className="absolute inset-0 pointer-events-none opacity-30 mix-blend-multiply bg-cover bg-center z-0"
+        style={{ backgroundImage: "url('/hero-bg2.png')" }}
       />
 
       {/* Decorative organic shapes */}
@@ -75,7 +75,18 @@ const CampaignHero = ({ campaign, content }: CampaignHeroProps) => {
           <p className="animate-fade-up delay-700 text-[#1a3d1a]/60 text-lg mt-3.5 max-w-xl mx-auto leading-relaxed">
             {content.hero.subtitle}
           </p>
-
+          {/* Booking Deadline */}
+          <div className="animate-fade-up delay-750 mt-5 flex justify-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#E86A10]/20 bg-[#FFF7F1] px-5 py-2.5 shadow-sm">
+              <Clock className="h-4 w-4 text-[#E86A10]" />
+              <span className="text-sm md:text-base font-medium text-[#E86A10]">
+                <span className=" text-[#1a3d1a]">
+                  অ্যাপয়েন্টমেন্ট বুকিংয়ের শেষ তারিখ:
+                </span>{' '}
+                ১৫ জুলাই
+              </span>
+            </div>
+          </div>
           <div className="animate-fade-up delay-800 mt-5">
             <Button
               size="lg"
@@ -116,28 +127,23 @@ const CampaignHero = ({ campaign, content }: CampaignHeroProps) => {
           ].map(({ icon: Icon, value, label, delay, accent }) => (
             <div
               key={label}
-              className={`relative flex items-stretch bg-white rounded-2xl overflow-hidden shadow-[0_15px_35px_-18px_rgba(26,61,26,0.3)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_25px_50px_-18px_rgba(26,61,26,0.4)] animate-fade-up ${delay}`}
+              className={`group flex items-center gap-4 rounded-2xl border border-[#1a3d1a]/8 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${delay}`}
             >
               <div
-                className="relative flex items-center justify-center w-16 md:w-20 flex-shrink-0"
+                className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl"
                 style={{ backgroundColor: accent }}
               >
-                <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
-                {/* ticket-stub notches */}
-                <span
-                  aria-hidden
-                  className="absolute -top-1.5 right-0 w-3 h-3 rounded-full bg-[#EFFDF0] translate-x-1/2"
-                />
-                <span
-                  aria-hidden
-                  className="absolute -bottom-1.5 right-0 w-3 h-3 rounded-full bg-[#EFFDF0] translate-x-1/2"
-                />
+                <Icon className="h-6 w-6 text-white" />
               </div>
-              <div className="flex-1 flex flex-col justify-center text-left px-4 py-4 md:py-4">
-                <div className="font-serif-display text-[#1a3d1a] text-xl md:text-lg leading-snug">
+
+              <div>
+                <div className="text-sm font-medium text-[#1a3d1a]/55">
+                  {label}
+                </div>
+
+                <div className="mt-1 font-serif-display text-xl text-[#1a3d1a]">
                   {value}
                 </div>
-                <div className="text-base md:text-xs text-[#1a3d1a]/45 font-medium mt-0.5">{label}</div>
               </div>
             </div>
           ))}
