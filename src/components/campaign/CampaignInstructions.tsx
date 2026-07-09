@@ -8,7 +8,7 @@ interface CampaignInstructionsProps {
 
 const CampaignInstructions = ({ content }: CampaignInstructionsProps) => {
   return (
-    <section className="relative bg-[#EFFDF0] py-24 overflow-hidden">
+    <section className="relative bg-[#FFFFFF] py-24 overflow-hidden">
       <div
         aria-hidden
         className="pointer-events-none absolute -bottom-24 -right-24 w-[26rem] h-[26rem] rounded-full bg-[#1a3d1a]/[0.05] blur-3xl"
@@ -24,7 +24,8 @@ const CampaignInstructions = ({ content }: CampaignInstructionsProps) => {
             গুরুত্বপূর্ণ <span className="text-[#E86A10]">নির্দেশনা</span>
           </h2>
           <p className="text-[#1a3d1a]/60 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-            টিকাদান কার্যক্রম মসৃণভাবে সম্পন্ন করতে অনুগ্রহ করে নিচের নির্দেশনাগুলো অনুসরণ করুন।
+            টিকাদান কার্যক্রম মসৃণভাবে সম্পন্ন করতে অনুগ্রহ করে নিচের
+            নির্দেশনাগুলো অনুসরণ করুন।
           </p>
         </div>
 
@@ -40,7 +41,9 @@ const CampaignInstructions = ({ content }: CampaignInstructionsProps) => {
                   {toBengaliDigits(String(index + 1).padStart(2, '0'))}
                 </span>
               </div>
-              <p className="text-[#1a3d1a]/75 leading-relaxed pt-2">{instruction}</p>
+              <p className="text-[#1a3d1a]/75 leading-relaxed pt-2">
+                {instruction}
+              </p>
             </div>
           ))}
         </div>

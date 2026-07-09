@@ -46,7 +46,9 @@ const CampaignLanding = () => {
         <h1 className="font-serif-display text-2xl md:text-3xl text-[#1a3d1a] mb-3">
           ক্যাম্পেইন তথ্য লোড করা যায়নি
         </h1>
-        <p className="text-[#1a3d1a]/60">অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।</p>
+        <p className="text-[#1a3d1a]/60">
+          অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।
+        </p>
       </div>
     );
   }
@@ -62,22 +64,21 @@ const CampaignLanding = () => {
       <CampaignHero campaign={campaign} content={content} />
       <CampaignInfo campaign={campaign} content={content} />
       <CampaignSchedule campaign={campaign} />
-      <CampaignVenue campaign={campaign} />
+
       <CampaignInstructions content={content} />
-      <CampaignFaq content={content} />
 
       <section
         id="appointment-form"
         className="relative bg-[#F7FFF8] py-24 scroll-mt-20 overflow-hidden"
       >
-        <div
+        {/* <div
           aria-hidden
           className="pointer-events-none absolute -top-28 -left-28 w-[26rem] h-[26rem] rounded-full bg-[#E86A10]/[0.07] blur-3xl"
         />
         <div
           aria-hidden
           className="pointer-events-none absolute -bottom-28 -right-28 w-[26rem] h-[26rem] rounded-full bg-[#1a3d1a]/[0.06] blur-3xl"
-        />
+        /> */}
 
         <div className="relative container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-up">
@@ -89,7 +90,8 @@ const CampaignLanding = () => {
               অ্যাপয়েন্টমেন্ট <span className="text-[#E86A10]">বুক করুন</span>
             </h2>
             <p className="text-[#1a3d1a]/60 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-              নিচের ফর্মটি পূরণ করে আপনার পোষা প্রাণীর জন্য একটি নির্দিষ্ট সময় স্লট বুক করুন।
+              নিচের ফর্মটি পূরণ করে আপনার পোষা প্রাণীর জন্য একটি নির্দিষ্ট সময়
+              স্লট বুক করুন।
             </p>
           </div>
           <div className="max-w-2xl mx-auto">
@@ -97,7 +99,8 @@ const CampaignLanding = () => {
           </div>
         </div>
       </section>
-
+      <CampaignFaq content={content} />
+      <CampaignVenue campaign={campaign} />
       <Footer />
     </div>
   );

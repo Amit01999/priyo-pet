@@ -1,5 +1,4 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Star } from 'lucide-react';
+import { MessageSquareQuote, Star } from 'lucide-react';
 
 const TestimonialsSection = () => {
   const testimonials = [
@@ -34,85 +33,85 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <section id="testimonials" className="py-20 bg-white">
-      <div className="container mx-auto px-4">
+    <section id="testimonials" className="relative bg-[#F7FFF8] py-24 overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-24 -left-24 w-[26rem] h-[26rem] rounded-full bg-[#1a3d1a]/[0.05] blur-3xl"
+      />
+
+      <div className="relative container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="font-poppins font-bold text-3xl md:text-4xl text-gray-800 mb-6">
-            What Pet Owners Say About{' '}
-            <span className="text-primary">Our Care</span>
+        <div className="text-center mb-16 animate-fade-up">
+          <span className="inline-flex items-center gap-1.5 bg-white border border-[#1a3d1a]/10 shadow-sm rounded-full px-4 py-1.5 text-xs font-semibold text-[#1a3d1a] mb-6">
+            <MessageSquareQuote className="w-3.5 h-3.5 text-[#E86A10]" />
+            Testimonials
+          </span>
+          <h2 className="font-serif-display text-[#1a3d1a] tracking-tight leading-[1.12] text-[clamp(28px,4vw,48px)] mb-5">
+            What Pet Owners Say About <span className="text-[#E86A10]">Our Care</span>
           </h2>
-          <p className="font-opensans text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-[#1a3d1a]/60 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
             Don't just take our word for it. Here's what pet parents across
             Khulna have to say about their experience with Priyo Pet & Vet Care.
           </p>
         </div>
 
         {/* Testimonials Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-14">
           {testimonials.map((testimonial, index) => (
-            <Card
+            <div
               key={index}
-              className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:scale-105 animate-fade-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="group relative bg-white rounded-[32px] border border-[#1a3d1a]/[0.06] shadow-[0_20px_50px_-15px_rgba(26,61,26,0.15)] hover:shadow-[0_35px_70px_-15px_rgba(26,61,26,0.25)] transition-all duration-500 hover:-translate-y-2 p-8 animate-fade-up"
+              style={{ animationDelay: `${index * 0.12}s` }}
             >
-              <CardContent className="p-6">
-                {/* Pet Image */}
-                <div className="flex justify-center mb-4">
-                  <img
-                    src={testimonial.image}
-                    alt={testimonial.petName}
-                    className="w-20 h-20 rounded-full object-cover shadow-lg group-hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
+              <MessageSquareQuote className="absolute top-6 right-7 w-9 h-9 text-[#EFFDF0]" />
 
-                {/* Rating */}
-                <div className="flex justify-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-5 h-5 text-secondary"
-                      fill="currentColor"
-                    />
-                  ))}
-                </div>
+              {/* Avatar */}
+              <div className="flex justify-center mb-5">
+                <img
+                  src={testimonial.image}
+                  alt={testimonial.petName}
+                  className="w-20 h-20 rounded-full object-cover shadow-md ring-4 ring-[#EFFDF0] group-hover:scale-110 transition-transform duration-300"
+                />
+              </div>
 
-                {/* Testimonial Text */}
-                <p className="font-opensans text-gray-600 text-center mb-4 leading-relaxed italic">
-                  "{testimonial.text}"
+              {/* Rating */}
+              <div className="flex justify-center gap-0.5 mb-4">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 text-[#E86A10]" fill="currentColor" />
+                ))}
+              </div>
+
+              {/* Testimonial Text */}
+              <p className="text-[#1a3d1a]/70 text-center mb-5 leading-relaxed italic">
+                "{testimonial.text}"
+              </p>
+
+              {/* Author Info */}
+              <div className="text-center border-t border-[#1a3d1a]/[0.06] pt-5">
+                <h4 className="font-serif-display text-lg text-[#1a3d1a]">{testimonial.name}</h4>
+                <p className="text-sm text-[#E86A10] font-medium mt-1">
+                  Pet Parent of {testimonial.petName}
                 </p>
-
-                {/* Author Info */}
-                <div className="text-center">
-                  <h4 className="font-poppins font-semibold text-gray-800">
-                    {testimonial.name}
-                  </h4>
-                  <p className="text-sm text-primary font-medium">
-                    Pet Parent of {testimonial.petName}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {testimonial.location}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+                <p className="text-xs text-[#1a3d1a]/45 mt-1">{testimonial.location}</p>
+              </div>
+            </div>
           ))}
         </div>
 
         {/* Statistics */}
-        <div className="bg-gradient-to-r from-primary to-accent rounded-2xl p-8 md:p-12 text-white text-center animate-fade-in">
+        <div className="bg-[#1a3d1a] rounded-[32px] shadow-[0_30px_70px_-20px_rgba(26,61,26,0.5)] p-8 md:p-14 text-white text-center animate-fade-up delay-300">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <div className="text-4xl font-bold font-poppins mb-2">98%</div>
-              <div className="font-opensans">Client Satisfaction Rate</div>
+              <div className="font-serif-display text-4xl md:text-5xl mb-2">98%</div>
+              <div className="text-white/70">Client Satisfaction Rate</div>
             </div>
             <div>
-              <div className="text-4xl font-bold font-poppins mb-2">4.9/5</div>
-              <div className="font-opensans">Average Rating</div>
+              <div className="font-serif-display text-4xl md:text-5xl mb-2">4.9/5</div>
+              <div className="text-white/70">Average Rating</div>
             </div>
             <div>
-              <div className="text-4xl font-bold font-poppins mb-2">1000+</div>
-              <div className="font-opensans">Happy Pet Families</div>
+              <div className="font-serif-display text-4xl md:text-5xl mb-2">1000+</div>
+              <div className="text-white/70">Happy Pet Families</div>
             </div>
           </div>
         </div>

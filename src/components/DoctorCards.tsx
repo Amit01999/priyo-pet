@@ -1,76 +1,5 @@
-// import React from 'react';
-// import doc1 from '../../public/doc1.png';
-// import doc2 from '../../public/doc2.png';
-// import doc3 from '../../public/doc3.png';
-
-// const doctors = [
-//   {
-//     name: 'Dr. Mrinmoiee Sarker',
-//     title: 'Pet Practitioner',
-//     details: [
-//       'DVM (PSTU) | BVC Reg. No.: 5441',
-//       'Livestock Extension Officer',
-//       'Batiaghata, Khulna',
-//     ],
-//     image: doc1,
-//   },
-//   {
-//     name: 'Dr. Palash Kumar Das',
-//     title: 'Pet Practitioner',
-//     details: [
-//       'DVM (BAU) | MS in Pharmacology',
-//       'Upazilla Livestock Officer',
-//       'Batiaghata, Khulna',
-//     ],
-//     image: doc2,
-//   },
-//   {
-//     name: 'Dr. Sumaiya Islam',
-//     title: 'Pet Practitioner',
-//     details: [
-//       'DVM (BSMRAU) | MS in Physiology',
-//       'BVC Reg. No.: 6324',
-//       'Livestock Extension Officer',
-//       'Fultola, Khulna',
-//     ],
-//     image: doc3,
-//   },
-// ];
-
-// export default function DoctorCards() {
-//   return (
-//     <section className="bg-white py-14">
-//       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
-//         {doctors.map((doc, index) => (
-//           <div
-//             key={index}
-//             className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 p-6 text-center border border-gray-100"
-//           >
-//             <div className="relative mx-auto w-40 h-40 mb-4">
-//               <div className="w-full h-full ">
-//                 <img
-//                   src={doc.image}
-//                   alt={doc.name}
-//                   className="w-full h-full object-cover rounded-full"
-//                 />
-//               </div>
-//             </div>
-
-//             <h3 className="text-xl font-semibold text-gray-800">{doc.name}</h3>
-//             <p className="text-sm text-[#16A085] font-medium">{doc.title}</p>
-//             <div className="mt-3 space-y-1 text-sm text-gray-600">
-//               {doc.details.map((line, i) => (
-//                 <p key={i}>{line}</p>
-//               ))}
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </section>
-//   );
-// }
-
-import React from 'react';
+import { GraduationCap, Briefcase, MapPin, ShieldCheck, Stethoscope } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import doc1 from '../../public/doc1.png';
 import doc2 from '../../public/doc2.png';
 import doc3 from '../../public/doc3.png';
@@ -80,6 +9,7 @@ const doctors = [
     name: 'Dr. Mrinmoiee Sarker',
     title: 'Pet Practitioner',
     details: [
+      'Founding Partner, Priyo Pet & Vet Care, Khulna',
       'DVM (PSTU) | BVC Reg. No.: 5441',
       'Livestock Extension Officer',
       'Batiaghata, Khulna',
@@ -109,68 +39,97 @@ const doctors = [
   },
 ];
 
+/** A degree line (contains "DVM") gets a graduation cap, a place name
+ *  (mentions "Khulna") gets a pin, everything else is a role line. */
+function iconForLine(line: string): LucideIcon {
+  if (line.includes('DVM')) return GraduationCap;
+  if (line.includes('Khulna')) return MapPin;
+  return Briefcase;
+}
+
 export default function DoctorCards() {
   return (
-    <section id="vets" className="bg-gradient-to-br from-gray-50 to-gray-100 py-5 pb-10">
-      {/* Header */}
-      <div className="text-center mb-16 animate-fade-in">
-        <h2 className="font-poppins font-bold text-3xl md:text-4xl text-gray-800 mb-6">
-          Meet Our <span className="text-primary">Expert Veterinarians</span>
+    <section id="vets" className="bg-white py-24">
+      <div className="text-center mb-16 animate-fade-up px-4">
+        <span className="inline-flex items-center gap-1.5 bg-[#EFFDF0] rounded-full px-4 py-1.5 text-xs font-semibold text-[#1a3d1a] mb-6">
+          <Stethoscope className="w-3.5 h-3.5 text-[#E86A10]" />
+          Our Team
+        </span>
+        <h2 className="font-serif-display text-[#1a3d1a] tracking-tight leading-[1.12] text-[clamp(28px,4vw,48px)] mb-5">
+          Meet Our <span className="text-[#E86A10]">Expert Veterinarians</span>
         </h2>
-        <p className="font-opensans text-gray-600 text-lg max-w-2xl mx-auto">
+        <p className="text-[#1a3d1a]/60 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
           Our team of dedicated veterinary professionals brings years of
           experience, advanced training, and genuine love for animals to provide
-          the best possible care for your pets.{' '}
+          the best possible care for your pets.
         </p>
       </div>
+
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {doctors.map((doc, index) => (
             <div
               key={index}
-              className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 overflow-hidden"
+              className="group bg-white rounded-[28px] border border-[#1a3d1a]/[0.08] shadow-[0_15px_40px_-20px_rgba(26,61,26,0.25)] hover:shadow-[0_25px_55px_-20px_rgba(26,61,26,0.35)] hover:-translate-y-1.5 hover:border-[#1a3d1a]/15 transition-all duration-500 overflow-hidden animate-fade-up"
+              style={{ animationDelay: `${index * 0.12}s` }}
             >
-              {/* Gradient accent */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#16A085] to-[#1abc9c]"></div>
+              {/* Patterned dark header band */}
+              <div className="relative h-24 bg-[#1a3d1a] overflow-hidden">
+                <div
+                  aria-hidden
+                  className="absolute inset-0 opacity-40"
+                  style={{
+                    backgroundImage: 'radial-gradient(rgba(255,255,255,0.5) 1.5px, transparent 1.5px)',
+                    backgroundSize: '18px 18px',
+                  }}
+                />
+                <div
+                  aria-hidden
+                  className="absolute -right-6 -top-6 w-28 h-28 rounded-full border border-white/10"
+                />
+                <div
+                  aria-hidden
+                  className="absolute -left-8 bottom-0 w-20 h-20 rounded-full border border-white/10"
+                />
+              </div>
 
-              <div className="p-8">
-                {/* Doctor Image */}
-                <div className="relative mx-auto w-36 h-36 mb-6">
-                  <div className="relative w-full h-full bg-gradient-to-br from-[#16A085]/5 to-[#1abc9c]/5 rounded-full p-1">
+              {/* Avatar overlapping the band */}
+              <div className="relative -mt-14 flex justify-center">
+                <div className="relative w-28 h-28">
+                  <div className="w-full h-full rounded-full bg-white p-1.5 shadow-lg">
                     <img
                       src={doc.image}
                       alt={doc.name}
-                      className="w-full h-full object-cover "
+                      className="w-full h-full rounded-full object-cover"
                     />
                   </div>
-                </div>
-
-                {/* Doctor Info */}
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-[#16A085] transition-colors duration-300">
-                    {doc.name}
-                  </h3>
-                  <p className="text-lg font-semibold text-[#16A085] mb-1">
-                    {doc.title}
-                  </p>
-                </div>
-
-                {/* Details */}
-                <div className="space-y-1 text-center">
-                  {doc.details.map((line, i) => (
-                    <p
-                      key={i}
-                      className="text-sm text-gray-600 leading-relaxed"
-                    >
-                      {line}
-                    </p>
-                  ))}
+                  <div className="absolute bottom-0.5 right-0.5 w-8 h-8 rounded-full bg-[#1a3d1a] border-2 border-white flex items-center justify-center shadow-md">
+                    <ShieldCheck className="w-3.5 h-3.5 text-white" />
+                  </div>
                 </div>
               </div>
 
-              {/* Decorative Elements */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#16A085]/5 to-[#1abc9c]/5 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-700"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-[#16A085]/5 to-[#1abc9c]/5 rounded-full translate-y-12 -translate-x-12 group-hover:scale-150 transition-transform duration-700"></div>
+              {/* Info */}
+              <div className="px-7 pt-4 pb-7 text-center">
+                <h3 className="font-serif-display text-xl md:text-2xl text-[#1a3d1a] mb-2">
+                  {doc.name}
+                </h3>
+                <span className="inline-block bg-[#E86A10]/10 text-[#E86A10] rounded-full px-3.5 py-1 text-xs font-semibold mb-5">
+                  {doc.title}
+                </span>
+
+                <div className="space-y-2.5 border-t border-[#1a3d1a]/[0.08] pt-5">
+                  {doc.details.map((line, i) => {
+                    const Icon = iconForLine(line);
+                    return (
+                      <div key={i} className="flex items-center justify-center gap-2.5">
+                        <Icon className="w-4 h-4 text-[#E86A10] flex-shrink-0" />
+                        <p className="text-sm text-[#1a3d1a]/60 leading-relaxed">{line}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           ))}
         </div>
