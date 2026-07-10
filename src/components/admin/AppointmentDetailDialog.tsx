@@ -158,54 +158,54 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
 
   return (
     <Dialog open={Boolean(appointment)} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-[24px] border-[#1a3d1a]/[0.06]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 font-poppins">
+          <DialogTitle className="flex items-center gap-2 font-poppins text-[#1a3d1a]">
             {appointment.petName}
             <Badge className={STATUS_BADGE_CLASSES[appointment.bookingStatus]}>{appointment.bookingStatus}</Badge>
           </DialogTitle>
           <DialogDescription>Full application details</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-2">
+        <div className="space-y-2 bg-[#F7FFF8] rounded-2xl p-4 border border-[#1a3d1a]/[0.05]">
           {rows.map((row) => (
             <div key={row.label} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 text-sm">
-              <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">{row.label}</span>
-              <span className="text-gray-800 break-words">{row.value}</span>
+              <span className="font-semibold text-[#1a3d1a]/50 sm:w-52 flex-shrink-0">{row.label}</span>
+              <span className="text-[#1a3d1a] break-words">{row.value}</span>
             </div>
           ))}
         </div>
 
-        <div className="border border-gray-100 rounded-lg p-3 space-y-2 bg-gray-50/60">
+        <div className="border border-[#1a3d1a]/[0.06] rounded-2xl p-4 space-y-2 bg-white">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-gray-700">Payment Information</span>
+            <span className="text-sm font-semibold text-[#1a3d1a]/70">Payment Information</span>
             <Badge className={PAYMENT_STATUS_BADGE_CLASSES[appointment.paymentStatus]}>
               {appointment.paymentStatus}
             </Badge>
           </div>
           <div className="space-y-1.5 text-sm">
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-              <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">Method</span>
-              <span className="text-gray-800">{appointment.paymentMethod}</span>
+              <span className="font-semibold text-[#1a3d1a]/50 sm:w-52 flex-shrink-0">Method</span>
+              <span className="text-[#1a3d1a]">{appointment.paymentMethod}</span>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-              <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">Amount</span>
-              <span className="text-gray-800">৳{appointment.paymentAmount}</span>
+              <span className="font-semibold text-[#1a3d1a]/50 sm:w-52 flex-shrink-0">Amount</span>
+              <span className="text-[#1a3d1a]">৳{appointment.paymentAmount}</span>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-              <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">Reference Number</span>
-              <span className="text-gray-800 break-words">{appointment.paymentReference}</span>
+              <span className="font-semibold text-[#1a3d1a]/50 sm:w-52 flex-shrink-0">Reference Number</span>
+              <span className="text-[#1a3d1a] break-words">{appointment.paymentReference}</span>
             </div>
             {appointment.verifiedAt && (
               <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-                <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">Resolved At</span>
-                <span className="text-gray-800">{new Date(appointment.verifiedAt).toLocaleString()}</span>
+                <span className="font-semibold text-[#1a3d1a]/50 sm:w-52 flex-shrink-0">Resolved At</span>
+                <span className="text-[#1a3d1a]">{new Date(appointment.verifiedAt).toLocaleString()}</span>
               </div>
             )}
             {appointment.paymentRejectionReason && (
               <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-                <span className="font-semibold text-gray-500 sm:w-52 flex-shrink-0">Rejection Reason</span>
-                <span className="text-gray-800 break-words">{appointment.paymentRejectionReason}</span>
+                <span className="font-semibold text-[#1a3d1a]/50 sm:w-52 flex-shrink-0">Rejection Reason</span>
+                <span className="text-[#1a3d1a] break-words">{appointment.paymentRejectionReason}</span>
               </div>
             )}
           </div>
@@ -214,7 +214,7 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
             <div className="flex flex-wrap items-center gap-2 pt-1">
               <Button
                 size="sm"
-                className="bg-primary hover:bg-primary/90"
+                className="bg-[#1a3d1a] hover:bg-[#2a5a2a] rounded-full"
                 disabled={verifyPaymentMutation.isPending}
                 onClick={() => verifyPaymentMutation.mutate()}
               >
@@ -224,6 +224,7 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
               <Button
                 size="sm"
                 variant="destructive"
+                className="rounded-full"
                 disabled={rejectPaymentMutation.isPending}
                 onClick={() => setShowRejectReason((v) => !v)}
               >
@@ -238,11 +239,12 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
                 placeholder="Reason (optional) — included in the rejection email"
-                className="min-h-[60px] bg-white"
+                className="min-h-[60px] bg-white rounded-xl border-[#1a3d1a]/15"
               />
               <Button
                 size="sm"
                 variant="destructive"
+                className="rounded-full"
                 disabled={rejectPaymentMutation.isPending}
                 onClick={() => rejectPaymentMutation.mutate()}
               >
@@ -254,7 +256,13 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
 
           {appointment.paymentStatus === 'Verified' && (
             <div className="pt-1">
-              <Button size="sm" variant="outline" disabled={downloadingTicket} onClick={handleDownloadTicket}>
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded-full border-[#1a3d1a]/15 text-[#1a3d1a] hover:bg-[#1a3d1a]/5"
+                disabled={downloadingTicket}
+                onClick={handleDownloadTicket}
+              >
                 {downloadingTicket && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
                 Download Ticket PDF
               </Button>
@@ -263,12 +271,16 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
         </div>
 
         <div>
-          <label className="text-sm font-semibold text-gray-700 mb-1.5 block">Admin Notes</label>
-          <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="min-h-[80px]" />
+          <label className="text-sm font-semibold text-[#1a3d1a]/70 mb-1.5 block">Admin Notes</label>
+          <Textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="min-h-[80px] rounded-xl border-[#1a3d1a]/15"
+          />
           <Button
             size="sm"
             variant="outline"
-            className="mt-2"
+            className="mt-2 rounded-full border-[#1a3d1a]/15 text-[#1a3d1a] hover:bg-[#1a3d1a]/5"
             disabled={notesMutation.isPending}
             onClick={() => notesMutation.mutate()}
           >
@@ -285,7 +297,7 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
                 size="sm"
                 disabled={statusMutation.isPending}
                 variant={status === 'Cancelled' ? 'destructive' : 'default'}
-                className={status !== 'Cancelled' ? 'bg-primary hover:bg-primary/90' : ''}
+                className={`rounded-full ${status !== 'Cancelled' ? 'bg-[#1a3d1a] hover:bg-[#2a5a2a]' : ''}`}
                 onClick={() => statusMutation.mutate(status)}
               >
                 Mark as {status}
@@ -295,7 +307,7 @@ const AppointmentDetailDialog = ({ slug, appointment, onClose }: AppointmentDeta
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button size="sm" variant="destructive" disabled={deleteMutation.isPending}>
+              <Button size="sm" variant="destructive" className="rounded-full" disabled={deleteMutation.isPending}>
                 {deleteMutation.isPending ? (
                   <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
                 ) : (

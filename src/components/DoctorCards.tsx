@@ -1,4 +1,10 @@
-import { GraduationCap, Briefcase, MapPin, ShieldCheck, Stethoscope } from 'lucide-react';
+import {
+  GraduationCap,
+  Briefcase,
+  MapPin,
+  ShieldCheck,
+  Stethoscope,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import doc1 from '../../public/doc1.png';
 import doc2 from '../../public/doc2.png';
@@ -11,8 +17,6 @@ const doctors = [
     details: [
       'Founding Partner, Priyo Pet & Vet Care, Khulna',
       'DVM (PSTU) | BVC Reg. No.: 5441',
-      'Livestock Extension Officer',
-      'Batiaghata, Khulna',
     ],
     image: doc1,
   },
@@ -29,12 +33,7 @@ const doctors = [
   {
     name: 'Dr. Sumaiya Islam',
     title: 'Pet Practitioner',
-    details: [
-      'DVM (BSMRAU) | MS in Physiology',
-      'BVC Reg. No.: 6324',
-      'Livestock Extension Officer',
-      'Fultola, Khulna',
-    ],
+    details: ['DVM (BSMRAU) | MS in Physiology', 'BVC Reg. No.: 6324'],
     image: doc3,
   },
 ];
@@ -79,7 +78,8 @@ export default function DoctorCards() {
                   aria-hidden
                   className="absolute inset-0 opacity-40"
                   style={{
-                    backgroundImage: 'radial-gradient(rgba(255,255,255,0.5) 1.5px, transparent 1.5px)',
+                    backgroundImage:
+                      'radial-gradient(rgba(255,255,255,0.5) 1.5px, transparent 1.5px)',
                     backgroundSize: '18px 18px',
                   }}
                 />
@@ -122,9 +122,14 @@ export default function DoctorCards() {
                   {doc.details.map((line, i) => {
                     const Icon = iconForLine(line);
                     return (
-                      <div key={i} className="flex items-center justify-center gap-2.5">
+                      <div
+                        key={i}
+                        className="flex items-center justify-center gap-2.5"
+                      >
                         <Icon className="w-4 h-4 text-[#E86A10] flex-shrink-0" />
-                        <p className="text-sm text-[#1a3d1a]/60 leading-relaxed">{line}</p>
+                        <p className="text-sm text-[#1a3d1a]/60 leading-relaxed">
+                          {line}
+                        </p>
                       </div>
                     );
                   })}

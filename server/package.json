@@ -12,6 +12,7 @@
     "test:watch": "vitest",
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
     "seed:campaign": "tsx src/scripts/seedCampaign.ts",
+    "seed:shop": "tsx src/scripts/seedShopProducts.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {

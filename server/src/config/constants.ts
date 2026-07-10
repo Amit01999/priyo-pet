@@ -52,6 +52,12 @@ export type HearAboutOption = (typeof HEAR_ABOUT_OPTIONS)[number];
 export const DAY_STATUS = ['open', 'closed'] as const;
 export type DayStatus = (typeof DAY_STATUS)[number];
 
+/** Shop order lifecycle. 'Approved' is reached automatically when payment is verified (mirrors
+ *  the appointment system's paymentStatus -> bookingStatus coupling); 'Cancelled' is reached
+ *  either from a rejected payment or a customer/admin cancellation. */
+export const ORDER_STATUS = ['Pending', 'Approved', 'Processing', 'Shipped', 'Delivered', 'Cancelled'] as const;
+export type OrderStatus = (typeof ORDER_STATUS)[number];
+
 /** Machine-readable error codes returned in the API's `errorCode` field for 409s and friends. */
 export const ERROR_CODES = {
   VALIDATION_ERROR: 'VALIDATION_ERROR',
@@ -73,5 +79,9 @@ export const ERROR_CODES = {
   CAPACITY_CONFLICT: 'CAPACITY_CONFLICT',
   DURATION_LOCKED: 'DURATION_LOCKED',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
+  EMAIL_IN_USE: 'EMAIL_IN_USE',
+  OUT_OF_STOCK: 'OUT_OF_STOCK',
+  PRODUCT_DISABLED: 'PRODUCT_DISABLED',
+  CART_EMPTY: 'CART_EMPTY',
 } as const;
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

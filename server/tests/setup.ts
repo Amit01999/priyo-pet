@@ -11,7 +11,20 @@ process.env.COOKIE_DOMAIN = 'localhost';
 import { beforeAll, afterAll, afterEach } from 'vitest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import { Admin, Campaign, Appointment, SlotBlock, RefreshToken } from '../src/models/index.js';
+import {
+  Admin,
+  Campaign,
+  Appointment,
+  SlotBlock,
+  RefreshToken,
+  Customer,
+  CustomerRefreshToken,
+  Category,
+  Product,
+  Cart,
+  Order,
+  ShopSettings,
+} from '../src/models/index.js';
 
 let mongod: MongoMemoryServer;
 
@@ -20,7 +33,20 @@ beforeAll(async () => {
   await mongoose.connect(mongod.getUri());
   // See config/db.ts — index creation is async by default and must be awaited explicitly,
   // otherwise concurrency tests race against index creation instead of against each other.
-  await Promise.all([Admin.init(), Campaign.init(), Appointment.init(), SlotBlock.init(), RefreshToken.init()]);
+  await Promise.all([
+    Admin.init(),
+    Campaign.init(),
+    Appointment.init(),
+    SlotBlock.init(),
+    RefreshToken.init(),
+    Customer.init(),
+    CustomerRefreshToken.init(),
+    Category.init(),
+    Product.init(),
+    Cart.init(),
+    Order.init(),
+    ShopSettings.init(),
+  ]);
 }, 60000);
 
 afterEach(async () => {

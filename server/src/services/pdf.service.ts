@@ -5,6 +5,8 @@ import PDFDocument from 'pdfkit';
 import QRCode from 'qrcode';
 import type { AppointmentDoc } from '../models/Appointment.model.js';
 import type { CampaignDoc } from '../models/Campaign.model.js';
+import type { OrderDoc } from '../models/Order.model.js';
+import type { CustomerDoc } from '../models/Customer.model.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // server/assets/logo1.png — a copy of the frontend's public/logo1.png. The Express process has
@@ -142,6 +144,120 @@ export async function generateTicketPdf(
         y,
         { width: pageWidth - margin * 2 }
       );
+
+    doc.end();
+  });
+}
+
+/** Renders a professional invoice PDF for a shop order — email attachment once payment is
+ *  verified, or an admin/customer manual download. */
+export async function generateInvoicePdf(order: OrderDoc, customer: CustomerDoc): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({ size: 'A4', margin: 0 });
+    const chunks: Buffer[] = [];
+    doc.on('data', (chunk) => chunks.push(chunk));
+    doc.on('end', () => resolve(Buffer.concat(chunks)));
+    doc.on('error', reject);
+
+    doc.registerFont(FONT_REGULAR, FONT_REGULAR_PATH);
+    doc.registerFont(FONT_BOLD, FONT_BOLD_PATH);
+    doc.font(FONT_REGULAR);
+
+    const pageWidth = doc.page.width;
+    const margin = 40;
+    const headerHeight = 100;
+    const textX = margin + LOGO_WIDTH + 16;
+
+    doc.rect(0, 0, pageWidth, headerHeight).fill(BRAND_GREEN);
+    if (fs.existsSync(LOGO_PATH)) {
+      doc.image(LOGO_PATH, margin, (headerHeight - LOGO_HEIGHT) / 2, { height: LOGO_HEIGHT });
+    }
+    doc
+      .font(FONT_BOLD)
+      .fillColor('#FFFFFF')
+      .fontSize(18)
+      .text('Invoice', textX, 24, { width: pageWidth - margin - textX })
+      .font(FONT_REGULAR)
+      .fontSize(11)
+      .fillColor('#D9E8D9')
+      .text(`Order #${order.orderNumber}`, textX, 52, { width: pageWidth - margin - textX })
+      .text(`Status: ${order.orderStatus}`, textX, 70, { width: pageWidth - margin - textX });
+
+    let y = headerHeight + 25;
+
+    doc.font(FONT_BOLD).fontSize(12).fillColor(BRAND_GREEN).text('Bill To', margin, y);
+    doc.font(FONT_REGULAR).fontSize(10).fillColor('#333333');
+    y += 18;
+    doc.text(order.shippingName, margin, y);
+    y += 14;
+    doc.text(order.shippingPhone, margin, y);
+    y += 14;
+    doc.text(`${order.shippingAddress}, ${order.shippingDistrict}`, margin, y, { width: 260 });
+    y += 30;
+
+    doc
+      .font(FONT_BOLD)
+      .fontSize(10)
+      .fillColor('#666666')
+      .text(`Order Date: ${new Date(order.createdAt).toLocaleDateString()}`, pageWidth - margin - 200, headerHeight + 25, {
+        width: 200,
+        align: 'right',
+      })
+      .text(`Payment Reference: ${order.paymentReference}`, pageWidth - margin - 200, headerHeight + 40, {
+        width: 200,
+        align: 'right',
+      })
+      .text(`Customer Email: ${customer.email}`, pageWidth - margin - 200, headerHeight + 55, {
+        width: 200,
+        align: 'right',
+      });
+
+    y += 10;
+    doc.moveTo(margin, y).lineTo(pageWidth - margin, y).strokeColor('#DDDDDD').stroke();
+    y += 15;
+
+    // Table header
+    const col = { name: margin, qty: pageWidth - margin - 220, price: pageWidth - margin - 150, total: pageWidth - margin - 70 };
+    doc.font(FONT_BOLD).fontSize(10).fillColor('#666666');
+    doc.text('Item', col.name, y, { width: 260 });
+    doc.text('Qty', col.qty, y, { width: 60, align: 'right' });
+    doc.text('Price', col.price, y, { width: 70, align: 'right' });
+    doc.text('Total', col.total, y, { width: 70, align: 'right' });
+    y += 16;
+    doc.moveTo(margin, y).lineTo(pageWidth - margin, y).strokeColor('#DDDDDD').stroke();
+    y += 10;
+
+    doc.font(FONT_REGULAR).fontSize(10).fillColor('#111111');
+    for (const item of order.items) {
+      const label = item.variantLabel ? `${item.name} (${item.variantLabel})` : item.name;
+      doc.text(label, col.name, y, { width: 260 });
+      doc.text(String(item.quantity), col.qty, y, { width: 60, align: 'right' });
+      doc.text(`৳${item.unitPriceDiscounted}`, col.price, y, { width: 70, align: 'right' });
+      doc.text(`৳${item.lineTotal}`, col.total, y, { width: 70, align: 'right' });
+      y += 20;
+    }
+
+    y += 10;
+    doc.moveTo(margin, y).lineTo(pageWidth - margin, y).strokeColor('#DDDDDD').stroke();
+    y += 15;
+
+    const summaryRow = (label: string, value: string, bold = false) => {
+      doc.font(bold ? FONT_BOLD : FONT_REGULAR).fontSize(bold ? 12 : 10).fillColor(bold ? BRAND_GREEN : '#333333');
+      doc.text(label, col.price - 80, y, { width: 150, align: 'right' });
+      doc.text(value, col.total, y, { width: 70, align: 'right' });
+      y += bold ? 22 : 18;
+    };
+
+    summaryRow('Subtotal', `৳${order.subtotal}`);
+    summaryRow('Delivery Charge', `৳${order.deliveryCharge}`);
+    summaryRow('Total', `৳${order.total}`, true);
+
+    y += 20;
+    doc
+      .font(FONT_BOLD)
+      .fontSize(12)
+      .fillColor(BRAND_GREEN)
+      .text('Thank you for shopping with PriyoPet Khulna!', margin, y, { width: pageWidth - margin * 2 });
 
     doc.end();
   });

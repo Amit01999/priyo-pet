@@ -12,7 +12,8 @@ import {
   ShieldX,
   TicketCheck,
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import PageHeader from '@/components/admin/PageHeader';
+import SectionCard from '@/components/admin/SectionCard';
 import StatCard from '@/components/admin/StatCard';
 import { useAdminCampaign } from '@/contexts/AdminCampaignContext';
 import { fetchDashboardStats } from '@/lib/api/adminDashboard.api';
@@ -30,7 +31,7 @@ const AdminDashboard = () => {
   if (!selectedSlug || isLoading || !data) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#1a3d1a]" />
       </div>
     );
   }
@@ -39,7 +40,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-poppins font-bold text-2xl text-gray-800">Dashboard</h1>
+      <PageHeader title="Dashboard" description="Campaign booking activity at a glance" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Total Applications" value={data.totalApplications} icon={Users} accent="primary" />
@@ -59,45 +60,43 @@ const AdminDashboard = () => {
         <StatCard label="Remaining Slots" value={remainingSlots} icon={TicketCheck} accent="primary" />
       </div>
 
-      <Card className="border-0 shadow-md">
-        <CardHeader>
-          <CardTitle className="font-poppins text-lg">Slot Availability by Day</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {data.dayBreakdown.map((day) => (
-              <div key={day.date} className="border border-gray-100 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-semibold text-gray-800">{day.date}</span>
-                  {day.remaining === 0 && (
-                    <span className="text-xs font-semibold text-destructive flex items-center gap-1">
-                      <Ban className="w-3.5 h-3.5" /> Full
-                    </span>
-                  )}
+      <SectionCard title="Slot Availability by Day">
+        <div className="grid sm:grid-cols-2 gap-4">
+          {data.dayBreakdown.map((day) => (
+            <div
+              key={day.date}
+              className="border border-[#1a3d1a]/[0.06] rounded-2xl p-4 hover:border-[#1a3d1a]/[0.12] transition-colors"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-semibold text-[#1a3d1a]">{day.date}</span>
+                {day.remaining === 0 && (
+                  <span className="text-xs font-semibold text-red-600 bg-red-50 rounded-full px-2.5 py-1 flex items-center gap-1">
+                    <Ban className="w-3.5 h-3.5" /> Full
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-4 gap-2 text-center text-sm">
+                <div>
+                  <div className="font-bold text-[#1a3d1a]">{day.capacity}</div>
+                  <div className="text-[#1a3d1a]/45 text-xs">Capacity</div>
                 </div>
-                <div className="grid grid-cols-4 gap-2 text-center text-sm">
-                  <div>
-                    <div className="font-bold text-gray-800">{day.capacity}</div>
-                    <div className="text-gray-500 text-xs">Capacity</div>
-                  </div>
-                  <div>
-                    <div className="font-bold text-primary">{day.booked}</div>
-                    <div className="text-gray-500 text-xs">Booked</div>
-                  </div>
-                  <div>
-                    <div className="font-bold text-destructive">{day.blocked}</div>
-                    <div className="text-gray-500 text-xs">Blocked</div>
-                  </div>
-                  <div>
-                    <div className="font-bold text-secondary">{day.remaining}</div>
-                    <div className="text-gray-500 text-xs">Available</div>
-                  </div>
+                <div>
+                  <div className="font-bold text-[#1a3d1a]">{day.booked}</div>
+                  <div className="text-[#1a3d1a]/45 text-xs">Booked</div>
+                </div>
+                <div>
+                  <div className="font-bold text-red-600">{day.blocked}</div>
+                  <div className="text-[#1a3d1a]/45 text-xs">Blocked</div>
+                </div>
+                <div>
+                  <div className="font-bold text-[#E86A10]">{day.remaining}</div>
+                  <div className="text-[#1a3d1a]/45 text-xs">Available</div>
                 </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            </div>
+          ))}
+        </div>
+      </SectionCard>
     </div>
   );
 };

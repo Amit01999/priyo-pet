@@ -12,6 +12,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import PageHeader from '@/components/admin/PageHeader';
+import SectionCard from '@/components/admin/SectionCard';
 import AppointmentsTable from '@/components/admin/AppointmentsTable';
 import AppointmentDetailDialog from '@/components/admin/AppointmentDetailDialog';
 import { useAdminCampaign } from '@/contexts/AdminCampaignContext';
@@ -71,24 +73,39 @@ const AdminAppointments = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="font-poppins font-bold text-2xl text-gray-800">Applications</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" disabled={exporting} onClick={() => handleExport('csv')}>
-            <Download className="w-4 h-4 mr-1.5" /> CSV
-          </Button>
-          <Button variant="outline" size="sm" disabled={exporting} onClick={() => handleExport('xlsx')}>
-            <Download className="w-4 h-4 mr-1.5" /> Excel
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Applications"
+        description="Review and manage campaign appointment submissions"
+        actions={
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={exporting}
+              onClick={() => handleExport('csv')}
+              className="rounded-full border-[#1a3d1a]/15 text-[#1a3d1a] hover:bg-[#1a3d1a]/5"
+            >
+              <Download className="w-4 h-4 mr-1.5" /> CSV
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={exporting}
+              onClick={() => handleExport('xlsx')}
+              className="rounded-full border-[#1a3d1a]/15 text-[#1a3d1a] hover:bg-[#1a3d1a]/5"
+            >
+              <Download className="w-4 h-4 mr-1.5" /> Excel
+            </Button>
+          </>
+        }
+      />
 
-      <div className="flex flex-wrap gap-3 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+      <SectionCard className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1a3d1a]/40" />
           <Input
             placeholder="Search by name, phone, pet, or payment reference..."
-            className="pl-9"
+            className="pl-9 h-10 rounded-xl border-[#1a3d1a]/15"
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -103,7 +120,7 @@ const AdminAppointments = () => {
             setPage(1);
           }}
         >
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-40 h-10 rounded-xl border-[#1a3d1a]/15">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -121,7 +138,7 @@ const AdminAppointments = () => {
             setPage(1);
           }}
         >
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-48 h-10 rounded-xl border-[#1a3d1a]/15">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -134,19 +151,19 @@ const AdminAppointments = () => {
         </Select>
         <Input
           type="date"
-          className="w-44"
+          className="w-44 h-10 rounded-xl border-[#1a3d1a]/15"
           value={dateFilter}
           onChange={(e) => {
             setDateFilter(e.target.value);
             setPage(1);
           }}
         />
-      </div>
+      </SectionCard>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+      <SectionCard>
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <Loader2 className="w-8 h-8 animate-spin text-[#1a3d1a]" />
           </div>
         ) : (
           <>
@@ -166,7 +183,7 @@ const AdminAppointments = () => {
                     />
                   </PaginationItem>
                   <PaginationItem>
-                    <span className="px-4 text-sm text-gray-600">
+                    <span className="px-4 text-sm text-[#1a3d1a]/60">
                       Page {data.page} of {data.totalPages}
                     </span>
                   </PaginationItem>
@@ -185,7 +202,7 @@ const AdminAppointments = () => {
             )}
           </>
         )}
-      </div>
+      </SectionCard>
 
       {selectedSlug && (
         <AppointmentDetailDialog

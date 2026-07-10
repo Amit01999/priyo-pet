@@ -107,3 +107,129 @@ export interface AdminUser {
   email: string;
   role: 'admin' | 'superadmin';
 }
+
+// --- Shop / e-commerce ---
+
+export type OrderStatus = 'Pending' | 'Approved' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
+
+export interface CustomerUser {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  address: string;
+  district: string;
+}
+
+export interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  isActive: boolean;
+}
+
+export interface ProductVariant {
+  _id: string;
+  label: string;
+  priceRegular: number;
+  priceDiscounted: number;
+  stock: number;
+}
+
+export interface Product {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  categoryId?: string;
+  images: string[];
+  hasVariants: boolean;
+  priceRegular?: number;
+  priceDiscounted?: number;
+  stock?: number;
+  variants: ProductVariant[];
+  isEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CartLine {
+  productId: string;
+  productSlug: string;
+  name: string;
+  image: string;
+  variantId: string | null;
+  variantLabel: string | null;
+  priceRegular: number;
+  priceDiscounted: number;
+  quantity: number;
+  lineTotal: number;
+  availableStock: number;
+  isAvailable: boolean;
+}
+
+export interface CartView {
+  items: CartLine[];
+  subtotal: number;
+  deliveryCharge: number;
+  total: number;
+}
+
+export interface OrderItem {
+  productId: string;
+  name: string;
+  image: string;
+  variantLabel: string | null;
+  unitPriceRegular: number;
+  unitPriceDiscounted: number;
+  quantity: number;
+  lineTotal: number;
+}
+
+export interface OrderStatusHistoryEntry {
+  status: string;
+  at: string;
+  changedBy: string;
+}
+
+export interface Order {
+  _id: string;
+  orderNumber: string;
+  customerId: string;
+  items: OrderItem[];
+  shippingName: string;
+  shippingPhone: string;
+  shippingAddress: string;
+  shippingDistrict: string;
+  notes: string;
+  subtotal: number;
+  deliveryCharge: number;
+  total: number;
+  orderStatus: OrderStatus;
+  paymentMethod: 'bKash';
+  paymentAmount: number;
+  paymentReference: string;
+  paymentConfirmedByUser: boolean;
+  paymentStatus: PaymentStatus;
+  verifiedBy?: string;
+  verifiedAt?: string;
+  paymentRejectionReason?: string;
+  statusHistory: OrderStatusHistoryEntry[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ShopSettings {
+  _id: string;
+  deliveryChargeBdt: number;
+}
+
+export interface ShopDashboardStats {
+  totalProducts: number;
+  totalOrders: number;
+  byOrderStatus: Record<OrderStatus, number>;
+  byPaymentStatus: Record<PaymentStatus, number>;
+  revenue: number;
+  lowStockProducts: number;
+  newCustomers: number;
+}

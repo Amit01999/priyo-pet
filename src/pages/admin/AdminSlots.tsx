@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Loader2, Lock, Unlock } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import PageHeader from '@/components/admin/PageHeader';
+import SectionCard from '@/components/admin/SectionCard';
 import SlotGrid from '@/components/campaign/SlotGrid';
 import { useAdminCampaign } from '@/contexts/AdminCampaignContext';
 import { fetchCampaign } from '@/lib/api/publicCampaign.api';
@@ -94,7 +95,7 @@ const AdminSlots = () => {
   if (!campaign) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#1a3d1a]" />
       </div>
     );
   }
@@ -103,31 +104,32 @@ const AdminSlots = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="font-poppins font-bold text-2xl text-gray-800">Slot Management</h1>
-        <Select value={activeDate ?? undefined} onValueChange={setSelectedDate}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Select date" />
-          </SelectTrigger>
-          <SelectContent>
-            {campaign.dates.map((date) => (
-              <SelectItem key={date} value={date}>
-                {date}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <PageHeader
+        title="Slot Management"
+        description="Block, unblock, and manage daily booking capacity"
+        actions={
+          <Select value={activeDate ?? undefined} onValueChange={setSelectedDate}>
+            <SelectTrigger className="w-48 h-10 rounded-xl border-[#1a3d1a]/15">
+              <SelectValue placeholder="Select date" />
+            </SelectTrigger>
+            <SelectContent>
+              {campaign.dates.map((date) => (
+                <SelectItem key={date} value={date}>
+                  {date}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        }
+      />
 
-      <Card className="border-0 shadow-md">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="font-poppins text-lg">
-            {activeDate} — {slotsResult?.remaining ?? '—'} / {slotsResult?.total ?? campaign.maxSlotsPerDay} available
-          </CardTitle>
+      <SectionCard
+        title={`${activeDate} — ${slotsResult?.remaining ?? '—'} / ${slotsResult?.total ?? campaign.maxSlotsPerDay} available`}
+        actions={
           <Button
             size="sm"
             variant={dayStatus === 'open' ? 'destructive' : 'default'}
-            className={dayStatus === 'closed' ? 'bg-primary hover:bg-primary/90' : ''}
+            className={`rounded-full ${dayStatus === 'closed' ? 'bg-[#1a3d1a] hover:bg-[#2a5a2a]' : ''}`}
             onClick={() => handleDayStatus(dayStatus === 'open' ? 'closed' : 'open')}
           >
             {dayStatus === 'open' ? (
@@ -140,49 +142,48 @@ const AdminSlots = () => {
               </>
             )}
           </Button>
-        </CardHeader>
-        <CardContent>
-          {isLoading || !slotsResult ? (
-            <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-          ) : (
-            <SlotGrid
-              mode="manage"
-              slots={slotsResult.slots}
-              onBlock={handleBlock}
-              onUnblock={handleUnblock}
-              pendingSlot={pendingSlot}
-            />
-          )}
-        </CardContent>
-      </Card>
+        }
+      >
+        {isLoading || !slotsResult ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="w-8 h-8 animate-spin text-[#1a3d1a]" />
+          </div>
+        ) : (
+          <SlotGrid
+            mode="manage"
+            slots={slotsResult.slots}
+            onBlock={handleBlock}
+            onUnblock={handleUnblock}
+            pendingSlot={pendingSlot}
+          />
+        )}
+      </SectionCard>
 
-      <Card className="border-0 shadow-md">
-        <CardHeader>
-          <CardTitle className="font-poppins text-lg">Campaign Configuration</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-wrap items-end gap-3">
+      <SectionCard title="Campaign Configuration">
+        <div className="flex flex-wrap items-end gap-3">
           <div>
-            <label className="text-sm font-semibold text-gray-700 mb-1.5 block">Daily slot limit</label>
+            <label className="text-sm font-semibold text-[#1a3d1a]/70 mb-1.5 block">Daily slot limit</label>
             <Input
               type="number"
               min={1}
               placeholder={String(campaign.maxSlotsPerDay)}
               value={maxSlotsInput}
               onChange={(e) => setMaxSlotsInput(e.target.value)}
-              className="w-32"
+              className="w-32 h-10 rounded-xl border-[#1a3d1a]/15"
             />
           </div>
-          <Button onClick={handleUpdateMaxSlots} className="bg-primary hover:bg-primary/90">
+          <Button
+            onClick={handleUpdateMaxSlots}
+            className="h-10 bg-[#1a3d1a] hover:bg-[#2a5a2a] text-white rounded-full shadow-sm transition-all duration-300 hover:scale-[1.02]"
+          >
             Update
           </Button>
-          <p className="text-xs text-gray-500 w-full">
+          <p className="text-xs text-[#1a3d1a]/45 w-full">
             Slot duration ({campaign.slotDurationMinutes} min) can only be changed while no appointments exist yet for
             this campaign.
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </SectionCard>
     </div>
   );
 };
