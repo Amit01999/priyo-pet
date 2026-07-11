@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Loader2, Eye, Download, XCircle } from 'lucide-react';
+import { Loader2, Eye, Download, XCircle, PackageOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import * as shopApi from '@/lib/api/shop.api';
 import { getApiErrorMessage } from '@/lib/api/client';
+import { PAYMENT_STATUS_BADGE_CLASSES, ORDER_STATUS_BADGE_CLASSES } from '@/lib/orderStatusBadges';
 
 const ORDER_STATUS_LABELS: Record<string, string> = {
   Pending: 'অপেক্ষমান',
@@ -62,33 +63,42 @@ const AccountOrders = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-serif-display text-2xl text-[#1a3d1a]">আমার অর্ডার</h1>
+      <div>
+        <h1 className="font-serif-display text-2xl text-[#1a3d1a]">আমার অর্ডার</h1>
+        <p className="text-sm text-[#1a3d1a]/50 mt-1">আপনার সকল অর্ডারের তালিকা ও অবস্থা দেখুন</p>
+      </div>
 
       {data.data.length === 0 ? (
-        <p className="text-[#1a3d1a]/50 py-12 text-center bg-white rounded-2xl border border-[#1a3d1a]/[0.06]">
-          এখনো কোনো অর্ডার নেই।
-        </p>
+        <div className="flex flex-col items-center justify-center gap-3 py-20 bg-white rounded-[20px] border border-[#1a3d1a]/[0.06]">
+          <div className="w-12 h-12 rounded-full bg-[#EFFDF0] flex items-center justify-center">
+            <PackageOpen className="w-5 h-5 text-[#1a3d1a]/40" />
+          </div>
+          <p className="text-[#1a3d1a]/45 text-sm">এখনো কোনো অর্ডার নেই।</p>
+        </div>
       ) : (
         <div className="space-y-3">
           {data.data.map((order) => (
             <div
               key={order._id}
-              className="bg-white rounded-[20px] border border-[#1a3d1a]/[0.06] shadow-sm p-5 flex flex-wrap items-center gap-4 justify-between"
+              className="bg-white rounded-[20px] border border-[#1a3d1a]/[0.06] shadow-[0_2px_14px_-6px_rgba(26,61,26,0.1)] hover:border-[#1a3d1a]/[0.12] transition-colors p-5 flex flex-wrap items-center gap-4 justify-between"
             >
               <div>
                 <div className="font-serif-display text-[#1a3d1a]">{order.orderNumber}</div>
-                <div className="text-xs text-[#1a3d1a]/50">{new Date(order.createdAt).toLocaleDateString()}</div>
+                <div className="text-xs text-[#1a3d1a]/45">{new Date(order.createdAt).toLocaleDateString()}</div>
               </div>
-              <div className="text-sm text-[#1a3d1a]/70">{order.items.length} টি পণ্য</div>
+              <div className="text-sm text-[#1a3d1a]/60">{order.items.length} টি পণ্য</div>
               <div className="font-semibold text-[#E86A10]">৳{order.total}</div>
-              <Badge variant="outline" className="border-[#1a3d1a]/20 text-[#1a3d1a]">
-                {order.paymentStatus}
-              </Badge>
-              <Badge className="bg-[#1a3d1a]/10 text-[#1a3d1a] border-transparent">
+              <Badge className={PAYMENT_STATUS_BADGE_CLASSES[order.paymentStatus]}>{order.paymentStatus}</Badge>
+              <Badge className={ORDER_STATUS_BADGE_CLASSES[order.orderStatus]}>
                 {ORDER_STATUS_LABELS[order.orderStatus] ?? order.orderStatus}
               </Badge>
               <div className="flex gap-2 ml-auto">
-                <Button asChild size="sm" variant="outline" className="rounded-full border-[#1a3d1a]/20 text-[#1a3d1a]">
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                  className="rounded-full border-[#1a3d1a]/20 text-[#1a3d1a] hover:bg-[#1a3d1a]/5"
+                >
                   <Link to={`/account/orders/${order._id}`}>
                     <Eye className="w-3.5 h-3.5 mr-1.5" /> বিস্তারিত
                   </Link>
@@ -99,7 +109,7 @@ const AccountOrders = () => {
                     variant="outline"
                     disabled={downloadingId === order._id}
                     onClick={() => handleDownloadInvoice(order._id, order.orderNumber)}
-                    className="rounded-full border-[#1a3d1a]/20 text-[#1a3d1a]"
+                    className="rounded-full border-[#1a3d1a]/20 text-[#1a3d1a] hover:bg-[#1a3d1a]/5"
                   >
                     {downloadingId === order._id ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -112,6 +122,7 @@ const AccountOrders = () => {
                   <Button
                     size="sm"
                     variant="destructive"
+                    className="rounded-full"
                     disabled={cancelMutation.isPending}
                     onClick={() => cancelMutation.mutate(order._id)}
                   >

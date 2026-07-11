@@ -36,6 +36,7 @@ const CustomerLogin = lazy(() => import("./pages/account/CustomerLogin"));
 const CustomerRegister = lazy(() => import("./pages/account/CustomerRegister"));
 const AccountLayout = lazy(() => import("./pages/account/AccountLayout"));
 const AccountOverview = lazy(() => import("./pages/account/AccountOverview"));
+const AccountCart = lazy(() => import("./pages/account/AccountCart"));
 const AccountOrders = lazy(() => import("./pages/account/AccountOrders"));
 const AccountOrderDetail = lazy(() => import("./pages/account/AccountOrderDetail"));
 const AccountProfile = lazy(() => import("./pages/account/AccountProfile"));
@@ -79,6 +80,7 @@ const App = () => (
                 <Route element={<RequireCustomerAuth />}>
                   <Route path="/account" element={<AccountLayout />}>
                     <Route index element={<AccountOverview />} />
+                    <Route path="cart" element={<AccountCart />} />
                     <Route path="orders" element={<AccountOrders />} />
                     <Route path="orders/:id" element={<AccountOrderDetail />} />
                     <Route path="profile" element={<AccountProfile />} />

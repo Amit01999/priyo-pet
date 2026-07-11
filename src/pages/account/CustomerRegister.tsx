@@ -53,8 +53,11 @@ const CustomerRegister = () => {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#EFFDF0] font-hero-inter px-4 py-12">
-      <div className="w-full max-w-md bg-white rounded-[32px] border border-[#1a3d1a]/[0.06] shadow-[0_30px_80px_-20px_rgba(26,61,26,0.3)] p-8 md:p-10">
+    <div className="min-h-screen flex items-center justify-center bg-[#EFFDF0] font-hero-inter px-4 py-12 relative overflow-hidden">
+      <div className="absolute -top-24 -left-24 w-72 h-72 bg-[#1a3d1a]/[0.05] rounded-full blur-3xl" />
+      <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-[#E86A10]/[0.08] rounded-full blur-3xl" />
+
+      <div className="relative w-full max-w-md bg-white rounded-[32px] border border-[#1a3d1a]/[0.06] shadow-[0_30px_80px_-20px_rgba(26,61,26,0.3)] p-8 md:p-10 animate-fade-in">
         <div className="flex flex-col items-center mb-7">
           <Link to="/">
             <img src={logo} alt="Priyo Pet & Vet Care" className="h-14 w-auto mb-4" />

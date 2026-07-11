@@ -49,9 +49,17 @@ const AccountProfile = () => {
 
   return (
     <div className="max-w-lg space-y-6">
-      <h1 className="font-serif-display text-2xl text-[#1a3d1a]">প্রোফাইল</h1>
+      <div className="flex items-center gap-4">
+        <span className="w-14 h-14 rounded-full bg-[#1a3d1a] text-white flex items-center justify-center text-xl font-semibold flex-shrink-0">
+          {customer?.name?.[0]?.toUpperCase() ?? 'A'}
+        </span>
+        <div>
+          <h1 className="font-serif-display text-2xl text-[#1a3d1a]">প্রোফাইল</h1>
+          <p className="text-sm text-[#1a3d1a]/50">{customer?.name}</p>
+        </div>
+      </div>
 
-      <div className="bg-white rounded-[20px] border border-[#1a3d1a]/[0.06] shadow-sm p-6">
+      <div className="bg-white rounded-[20px] border border-[#1a3d1a]/[0.06] shadow-[0_2px_14px_-6px_rgba(26,61,26,0.1)] p-6">
         <Form {...form}>
           <form onSubmit={onSubmit} className="space-y-4">
             <FormField
@@ -110,7 +118,7 @@ const AccountProfile = () => {
             <Button
               type="submit"
               disabled={submitting}
-              className="bg-[#1a3d1a] hover:bg-[#2a5a2a] text-white rounded-full"
+              className="bg-[#1a3d1a] hover:bg-[#2a5a2a] text-white rounded-full shadow-sm transition-all duration-300 hover:scale-[1.02]"
             >
               {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
               সংরক্ষণ করুন
@@ -119,7 +127,7 @@ const AccountProfile = () => {
         </Form>
       </div>
 
-      <div className="bg-white rounded-[20px] border border-[#1a3d1a]/[0.06] shadow-sm p-6">
+      <div className="bg-white rounded-[20px] border border-[#1a3d1a]/[0.06] shadow-[0_2px_14px_-6px_rgba(26,61,26,0.1)] p-6">
         <h3 className="font-serif-display text-lg text-[#1a3d1a] mb-2">ইমেইল</h3>
         <p className="text-[#1a3d1a]/60 text-sm">{customer?.email}</p>
       </div>

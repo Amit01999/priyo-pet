@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -12,6 +13,7 @@ import {
   Users,
   Settings,
   ChevronRight,
+  Loader2,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -188,7 +190,15 @@ const AdminLayoutInner = () => {
           </div>
         </header>
         <main className="flex-1 p-4 md:p-8 max-w-[1400px] w-full mx-auto animate-fade-in">
-          <Outlet />
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-64">
+                <Loader2 className="w-8 h-8 animate-spin text-[#1a3d1a]" />
+              </div>
+            }
+          >
+            <Outlet />
+          </Suspense>
         </main>
       </SidebarInset>
     </SidebarProvider>
