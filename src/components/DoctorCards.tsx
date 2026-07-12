@@ -25,8 +25,8 @@ const doctors = [
     title: 'Pet Practitioner',
     details: [
       'DVM (BAU) | MS in Pharmacology',
-      'Upazilla Livestock Officer',
-      'Batiaghata, Khulna',
+      'District Training Officer',
+      'Bagerhat, Khulna',
     ],
     image: doc2,
   },
