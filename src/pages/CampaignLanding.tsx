@@ -10,9 +10,11 @@ import CampaignVenue from '@/components/campaign/CampaignVenue';
 import CampaignInstructions from '@/components/campaign/CampaignInstructions';
 import CampaignFaq from '@/components/campaign/CampaignFaq';
 import AppointmentForm from '@/components/campaign/AppointmentForm/AppointmentForm';
+import BookingClosedNotice from '@/components/campaign/BookingClosedNotice';
 import Footer from '@/components/Footer';
 import { fetchCampaign } from '@/lib/api/publicCampaign.api';
 import { getCampaignContent } from '@/content/campaigns/registry';
+import { IS_APPOINTMENT_BOOKING_OPEN } from '@/config/appointmentBooking';
 import NotFound from './NotFound';
 
 const CampaignLanding = () => {
@@ -87,8 +89,9 @@ const CampaignLanding = () => {
               অ্যাপয়েন্টমেন্ট <span className="text-[#E86A10]">বুক করুন</span>
             </h2>
             <p className="text-[#1a3d1a]/60 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-              নিচের ফর্মটি পূরণ করে আপনার পোষা প্রাণীর জন্য একটি নির্দিষ্ট সময়
-              স্লট বুক করুন।
+              {IS_APPOINTMENT_BOOKING_OPEN
+                ? 'নিচের ফর্মটি পূরণ করে আপনার পোষা প্রাণীর জন্য একটি নির্দিষ্ট সময় স্লট বুক করুন।'
+                : 'বর্তমানে অ্যাপয়েন্টমেন্ট বুকিং বন্ধ রয়েছে। পরবর্তী বুকিং সময়সূচি শীঘ্রই জানানো হবে।'}
             </p>
           </div>
           <div className=" mb-12 flex justify-center animate-fade-up">
@@ -113,7 +116,11 @@ const CampaignLanding = () => {
             </div>
           </div>
           <div className="max-w-2xl mx-auto">
-            <AppointmentForm campaign={campaign} content={content} />
+            {IS_APPOINTMENT_BOOKING_OPEN ? (
+              <AppointmentForm campaign={campaign} content={content} />
+            ) : (
+              <BookingClosedNotice />
+            )}
           </div>
         </div>
       </section>

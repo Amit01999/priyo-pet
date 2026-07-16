@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Clock, ArrowRight, Sparkles } from 'lucide-react';
 import { formatBengaliDateRange } from '@/lib/bengaliDate';
+import { IS_APPOINTMENT_BOOKING_OPEN } from '@/config/appointmentBooking';
 import type { PublicCampaign } from '@/lib/api/types';
 import type { CampaignContent } from '@/content/campaigns/rabies-2026.content';
 
@@ -76,28 +77,32 @@ const CampaignHero = ({ campaign, content }: CampaignHeroProps) => {
             {content.hero.subtitle}
           </p>
           {/* Booking Deadline */}
-          <div className="animate-fade-up delay-750 mt-5 flex justify-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#E86A10]/20 bg-[#FFF7F1] px-5 py-2.5 shadow-sm">
-              <Clock className="h-4 w-4 text-[#E86A10]" />
-              <span className="text-sm md:text-base font-medium text-[#E86A10]">
-                <span className=" text-[#1a3d1a]">
-                  অ্যাপয়েন্টমেন্ট বুকিংয়ের শেষ তারিখ:
-                </span>{' '}
-                ১৫ জুলাই
-              </span>
+          {IS_APPOINTMENT_BOOKING_OPEN && (
+            <div className="animate-fade-up delay-750 mt-5 flex justify-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#E86A10]/20 bg-[#FFF7F1] px-5 py-2.5 shadow-sm">
+                <Clock className="h-4 w-4 text-[#E86A10]" />
+                <span className="text-sm md:text-base font-medium text-[#E86A10]">
+                  <span className=" text-[#1a3d1a]">
+                    অ্যাপয়েন্টমেন্ট বুকিংয়ের শেষ তারিখ:
+                  </span>{' '}
+                  ১৫ জুলাই
+                </span>
+              </div>
             </div>
-          </div>
-          <div className="animate-fade-up delay-800 mt-5">
-            <Button
-              size="lg"
-              onClick={scrollToForm}
-              className="bg-[#E86A10] hover:bg-[#d45e0d] text-white px-7 py-5 text-lg font-semibold rounded-full shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-            >
-              <Calendar className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-              অ্যাপয়েন্টমেন্ট বুক করুন
-              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-2" />
-            </Button>
-          </div>
+          )}
+          {IS_APPOINTMENT_BOOKING_OPEN && (
+            <div className="animate-fade-up delay-800 mt-5">
+              <Button
+                size="lg"
+                onClick={scrollToForm}
+                className="bg-[#E86A10] hover:bg-[#d45e0d] text-white px-7 py-5 text-lg font-semibold rounded-full shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+              >
+                <Calendar className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                অ্যাপয়েন্টমেন্ট বুক করুন
+                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-2" />
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Key facts — premium cards */}
