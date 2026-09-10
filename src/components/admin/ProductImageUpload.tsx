@@ -16,8 +16,9 @@ interface PendingUpload {
 }
 
 const ACCEPTED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-// Keep in sync with MAX_IMAGE_SIZE_BYTES in server/src/middlewares/upload.ts
-const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+// Keep in sync with MAX_IMAGE_SIZE_BYTES in server/src/middlewares/upload.ts (kept under
+// Vercel's hard 4.5MB serverless function request-body limit).
+const MAX_FILE_SIZE_BYTES = 4 * 1024 * 1024;
 
 interface ProductImageUploadProps {
   value: ProductImageValue[];
@@ -63,7 +64,7 @@ const ProductImageUpload = ({ value, onChange, disabled }: ProductImageUploadPro
         return;
       }
       if (file.size > MAX_FILE_SIZE_BYTES) {
-        toast.error(`${file.name}: image must be smaller than 5MB.`);
+        toast.error(`${file.name}: image must be smaller than 4MB.`);
         return;
       }
       uploadOne(file);
@@ -153,7 +154,7 @@ const ProductImageUpload = ({ value, onChange, disabled }: ProductImageUploadPro
         }}
       />
 
-      <p className="mt-1.5 text-xs text-[#1a3d1a]/40">JPG, PNG, or WebP. Max 5MB each.</p>
+      <p className="mt-1.5 text-xs text-[#1a3d1a]/40">JPG, PNG, or WebP. Max 4MB each.</p>
     </div>
   );
 };

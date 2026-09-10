@@ -14,7 +14,7 @@ const FeaturedProducts = () => {
   if (!isLoading && (!data || data.data.length === 0)) return null;
 
   return (
-    <section className="bg-white py-24">
+    <section id="services" className="bg-white py-24">
       <div className="text-center mb-16 animate-fade-up px-4">
         <span className="inline-flex items-center gap-1.5 bg-[#EFFDF0] rounded-full px-4 py-1.5 text-xs font-semibold text-[#1a3d1a] mb-6">
           <Store className="w-3.5 h-3.5 text-[#E86A10]" />

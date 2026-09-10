@@ -3,7 +3,10 @@ import type { NextFunction, Request, Response } from 'express';
 import { BadRequest } from '../errors/httpErrors.js';
 
 const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
-export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+// Vercel enforces a hard, non-configurable 4.5MB request body limit on serverless functions
+// (413 FUNCTION_PAYLOAD_TOO_LARGE below the app) — stay comfortably under it so our own
+// friendly validation error always fires first, in both dev and production.
+export const MAX_IMAGE_SIZE_BYTES = 4 * 1024 * 1024; // 4MB
 
 // memoryStorage only — the API runs as a Vercel serverless function with a read-only
 // filesystem, so files must be held in a buffer and streamed straight to Cloudinary.

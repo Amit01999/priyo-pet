@@ -63,7 +63,7 @@ const BookingSection = () => {
   };
 
   return (
-    <section className="relative bg-white py-24 overflow-hidden">
+    <section id="contact" className="relative bg-white py-24 overflow-hidden">
       <div
         aria-hidden
         className="pointer-events-none absolute -top-24 -right-24 w-[26rem] h-[26rem] rounded-full bg-[#E86A10]/[0.06] blur-3xl"

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import request from 'supertest';
 import { createApp } from '../../src/app.js';
 import { createTestAdmin } from '../helpers/factories.js';
+import { MAX_IMAGE_SIZE_BYTES } from '../../src/middlewares/upload.js';
 
 const app = createApp();
 
@@ -32,9 +33,9 @@ describe('admin product image upload validation', () => {
     expect(res.body.message).toMatch(/JPG, PNG, and WebP/i);
   });
 
-  it('rejects a file over the 5MB size limit', async () => {
+  it('rejects a file over the size limit', async () => {
     const token = await loginAndGetToken('upload-admin-2@test.com');
-    const oversized = Buffer.alloc(5 * 1024 * 1024 + 1);
+    const oversized = Buffer.alloc(MAX_IMAGE_SIZE_BYTES + 1);
     const res = await request(app)
       .post('/api/admin/shop/products/upload-image')
       .set('Authorization', `Bearer ${token}`)
