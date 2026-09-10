@@ -24,6 +24,12 @@ const envSchema = z.object({
 
   // Manual bKash "Send Money" verification — no payment gateway integration yet.
   BKASH_MERCHANT_NUMBER: z.string().optional(),
+
+  // Cloudinary (product image uploads). Optional: absent just makes the upload endpoint
+  // return a clear "not configured" error instead of failing app boot — same idea as MAIL_*.
+  CLOUDINARY_CLOUD_NAME: z.string().optional(),
+  CLOUDINARY_API_KEY: z.string().optional(),
+  CLOUDINARY_API_SECRET: z.string().optional(),
 });
 
 function loadEnv() {

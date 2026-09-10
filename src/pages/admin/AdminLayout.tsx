@@ -30,7 +30,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -41,7 +47,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
-import { AdminCampaignProvider, useAdminCampaign } from '@/contexts/AdminCampaignContext';
+import {
+  AdminCampaignProvider,
+  useAdminCampaign,
+} from '@/contexts/AdminCampaignContext';
 
 const NAV_ITEMS = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -60,10 +69,12 @@ const SHOP_NAV_ITEMS = [
 
 const NAV_LINK_BASE =
   'text-[#EFFDF0]/70 hover:bg-white/[0.06] hover:text-white rounded-xl transition-colors duration-200';
-const NAV_LINK_ACTIVE = 'bg-[#E86A10] text-white font-medium hover:bg-[#E86A10] hover:text-white';
+const NAV_LINK_ACTIVE =
+  'bg-[#E86A10] text-white font-medium hover:bg-[#E86A10] hover:text-white';
 
 const CampaignSelector = () => {
-  const { campaigns, selectedSlug, setSelectedSlug, isLoading } = useAdminCampaign();
+  const { campaigns, selectedSlug, setSelectedSlug, isLoading } =
+    useAdminCampaign();
 
   if (isLoading || campaigns.length === 0) return null;
 
@@ -73,7 +84,7 @@ const CampaignSelector = () => {
         <SelectValue placeholder="Select campaign" />
       </SelectTrigger>
       <SelectContent>
-        {campaigns.map((c) => (
+        {campaigns.map(c => (
           <SelectItem key={c.slug} value={c.slug}>
             {c.title}
           </SelectItem>
@@ -88,7 +99,9 @@ const ALL_NAV_ITEMS = [...NAV_ITEMS, ...SHOP_NAV_ITEMS];
 const AdminLayoutInner = () => {
   const { admin, logout } = useAdminAuth();
   const location = useLocation();
-  const currentLabel = ALL_NAV_ITEMS.find((item) => item.to === location.pathname)?.label ?? 'Dashboard';
+  const currentLabel =
+    ALL_NAV_ITEMS.find(item => item.to === location.pathname)?.label ??
+    'Dashboard';
 
   return (
     <SidebarProvider>
@@ -100,19 +113,23 @@ const AdminLayoutInner = () => {
             </span>
             PriyoPet Admin
           </div>
-          <CampaignSelector />
         </SidebarHeader>
         <SidebarContent className="px-1">
           <SidebarGroup>
             <SidebarGroupLabel className="text-[#EFFDF0]/40 uppercase tracking-wider text-[10px] font-semibold px-3">
-              Campaign
+              Shop
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {NAV_ITEMS.map((item) => (
+                {SHOP_NAV_ITEMS.map(item => (
                   <SidebarMenuItem key={item.to}>
                     <SidebarMenuButton asChild className={NAV_LINK_BASE}>
-                      <NavLink to={item.to} className={({ isActive }) => (isActive ? NAV_LINK_ACTIVE : '')}>
+                      <NavLink
+                        to={item.to}
+                        className={({ isActive }) =>
+                          isActive ? NAV_LINK_ACTIVE : ''
+                        }
+                      >
                         <item.icon />
                         <span>{item.label}</span>
                       </NavLink>
@@ -122,17 +139,22 @@ const AdminLayoutInner = () => {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-
+          <CampaignSelector />
           <SidebarGroup>
             <SidebarGroupLabel className="text-[#EFFDF0]/40 uppercase tracking-wider text-[10px] font-semibold px-3">
-              Shop
+              Campaign
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {SHOP_NAV_ITEMS.map((item) => (
+                {NAV_ITEMS.map(item => (
                   <SidebarMenuItem key={item.to}>
                     <SidebarMenuButton asChild className={NAV_LINK_BASE}>
-                      <NavLink to={item.to} className={({ isActive }) => (isActive ? NAV_LINK_ACTIVE : '')}>
+                      <NavLink
+                        to={item.to}
+                        className={({ isActive }) =>
+                          isActive ? NAV_LINK_ACTIVE : ''
+                        }
+                      >
                         <item.icon />
                         <span>{item.label}</span>
                       </NavLink>
@@ -144,7 +166,9 @@ const AdminLayoutInner = () => {
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter className="p-4 space-y-2.5 border-t border-white/[0.06]">
-          <p className="text-xs text-[#EFFDF0]/50 truncate px-1">{admin?.email}</p>
+          <p className="text-xs text-[#EFFDF0]/50 truncate px-1">
+            {admin?.email}
+          </p>
           <Button
             variant="outline"
             size="sm"
@@ -182,7 +206,10 @@ const AdminLayoutInner = () => {
                   {admin?.email}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => logout()} className="text-destructive focus:text-destructive">
+                <DropdownMenuItem
+                  onClick={() => logout()}
+                  className="text-destructive focus:text-destructive"
+                >
                   <LogOut className="w-4 h-4 mr-2" /> Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>

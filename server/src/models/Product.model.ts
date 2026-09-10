@@ -18,6 +18,10 @@ const productSchema = new Schema(
     categoryId: { type: Schema.Types.ObjectId, ref: 'Category' },
 
     images: { type: [String], default: [] },
+    // Cloudinary public_ids for the entries in `images`, kept only so a removed/replaced
+    // image can be deleted from Cloudinary later (see product.service.ts). Not positionally
+    // matched to `images` — it's just the current set of Cloudinary assets this product owns.
+    imagePublicIds: { type: [String], default: [] },
 
     /** When true, pricing/stock live per-entry in `variants`; when false, the top-level
      *  price/stock fields apply. Keeps the common single-SKU case (no variant UI) simple
@@ -52,6 +56,7 @@ export interface ProductDoc {
   description: string;
   categoryId?: Types.ObjectId;
   images: string[];
+  imagePublicIds: string[];
   hasVariants: boolean;
   priceRegular?: number;
   priceDiscounted?: number;

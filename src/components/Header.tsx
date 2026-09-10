@@ -94,7 +94,9 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <img src={logo} alt="PrioPet" className="h-12 w-auto" />
+          <Link to="/">
+            <img src={logo} alt="PrioPet" className="h-12 w-auto" />
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">

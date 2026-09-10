@@ -143,6 +143,7 @@ export interface Product {
   description: string;
   categoryId?: string;
   images: string[];
+  imagePublicIds?: string[];
   hasVariants: boolean;
   priceRegular?: number;
   priceDiscounted?: number;

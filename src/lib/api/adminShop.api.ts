@@ -26,6 +26,7 @@ export interface ProductFormInput {
   description?: string;
   categoryId?: string;
   images: string[];
+  imagePublicIds?: string[];
   hasVariants: boolean;
   priceRegular?: number;
   priceDiscounted?: number;
@@ -46,6 +47,31 @@ export async function updateProduct(id: string, input: Partial<ProductFormInput>
 
 export async function deleteProduct(id: string): Promise<void> {
   await api.delete(`/admin/shop/products/${id}`);
+}
+
+// --- Product images (Cloudinary) ---
+
+export interface UploadedProductImage {
+  url: string;
+  publicId: string;
+}
+
+export async function uploadProductImage(
+  file: File,
+  onProgress?: (percent: number) => void
+): Promise<UploadedProductImage> {
+  const formData = new FormData();
+  formData.append('image', file);
+  const res = await api.post<ApiSuccess<UploadedProductImage>>('/admin/shop/products/upload-image', formData, {
+    onUploadProgress: (event) => {
+      if (onProgress && event.total) onProgress(Math.round((event.loaded / event.total) * 100));
+    },
+  });
+  return res.data.data;
+}
+
+export async function deleteProductImage(publicId: string): Promise<void> {
+  await api.delete('/admin/shop/products/upload-image', { params: { publicId } });
 }
 
 // --- Categories ---

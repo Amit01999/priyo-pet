@@ -7,6 +7,12 @@ process.env.FRONTEND_URL = 'http://localhost:8080';
 process.env.JWT_ACCESS_SECRET = 'test-secret-test-secret-test-secret-not-for-prod';
 process.env.MONGODB_URI = 'mongodb://127.0.0.1:27017/placeholder-not-used';
 process.env.COOKIE_DOMAIN = 'localhost';
+// Dummy but truthy, so utils/cloudinary.ts's `isConfigured` check is deterministic across
+// machines/CI regardless of whether a real server/.env is present. Tests that exercise the
+// actual upload/delete calls mock the `cloudinary` package itself — see cloudinary.util.test.ts.
+process.env.CLOUDINARY_CLOUD_NAME = 'test-cloud';
+process.env.CLOUDINARY_API_KEY = 'test-key';
+process.env.CLOUDINARY_API_SECRET = 'test-secret';
 
 import { beforeAll, afterAll, afterEach } from 'vitest';
 import { MongoMemoryServer } from 'mongodb-memory-server';

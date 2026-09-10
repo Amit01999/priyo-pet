@@ -51,11 +51,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <div className="group relative bg-white rounded-[28px] border border-[#1a3d1a]/[0.07] shadow-[0_15px_40px_-20px_rgba(26,61,26,0.25)] hover:shadow-[0_28px_60px_-18px_rgba(26,61,26,0.35)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col">
+    <div className="group relative bg-white rounded-xl border border-[#1a3d1a]/[0.07] shadow-[0_6px_16px_-10px_rgba(26,61,26,0.25)] hover:shadow-[0_10px_24px_-10px_rgba(26,61,26,0.3)] hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
       {/* Image */}
       <Link
         to={`/shop/${product.slug}`}
-        className="relative block aspect-square overflow-hidden border-b border-[#1a3d1a]/[0.07]"
+        className="relative block aspect-[4/3] overflow-hidden border-b border-[#1a3d1a]/[0.07]"
       >
         <img
           src={product.images[0] ?? '/placeholder.svg'}
@@ -63,9 +63,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
 
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5 items-start">
           {discountPercent > 0 && (
-            <span className="bg-[#E86A10] text-white text-xs font-bold rounded-full px-3 py-1 shadow-[0_4px_12px_rgba(232,106,16,0.45)]">
+            <span className="bg-[#E86A10] text-white text-xs font-bold rounded-full px-2.5 py-1 shadow-[0_4px_12px_rgba(232,106,16,0.45)]">
               {discountPercent}% ছাড়
             </span>
           )}
@@ -77,7 +77,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
 
         {/* Quick view — appears on hover */}
-        <span className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-center opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+        <span className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-center opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
           <Eye className="w-4 h-4 text-[#1a3d1a]" />
         </span>
 
@@ -91,32 +91,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </Link>
 
       {/* Content */}
-      <div className="p-5 flex flex-col flex-1">
+      <div className="p-4 flex flex-col flex-1">
         <Link to={`/shop/${product.slug}`}>
-          <h3 className="font-serif-display text-lg text-[#1a3d1a] mb-1 line-clamp-1 group-hover:text-[#E86A10] transition-colors">
+          <h3 className="font-serif-display text-base text-[#1a3d1a] mb-1.5 line-clamp-1 group-hover:text-[#E86A10] transition-colors">
             {product.name}
           </h3>
         </Link>
 
-        {product.description && (
-          <p className="text-xs text-[#1a3d1a]/50 leading-relaxed line-clamp-2 mb-3">{product.description}</p>
-        )}
-
-        <div className="flex items-center flex-wrap gap-x-2 gap-y-1 mb-3">
-          <span className="font-serif-display text-xl text-[#1a3d1a]">৳{priceDiscounted}</span>
+        <div className="flex items-center flex-wrap gap-x-2 gap-y-1 mb-2.5">
+          <span className="font-serif-display text-lg text-[#1a3d1a]">৳{priceDiscounted}</span>
           {priceRegular > priceDiscounted && (
-            <>
-              <span className="text-sm text-[#1a3d1a]/35 line-through">৳{priceRegular}</span>
-              <span className="text-[10px] font-semibold text-[#1a3d1a] bg-[#EFFDF0] rounded-full px-2 py-0.5">
-                সাশ্রয় ৳{savings}
-              </span>
-            </>
+            <span className="text-sm text-[#1a3d1a]/35 line-through">৳{priceRegular}</span>
           )}
         </div>
 
         {product.hasVariants && (
           <Select value={selectedVariantId} onValueChange={setSelectedVariantId}>
-            <SelectTrigger className="mb-3 h-9 rounded-lg border-[#1a3d1a]/15 text-sm">
+            <SelectTrigger className="mb-2.5 h-9 rounded-lg border-[#1a3d1a]/15 text-sm">
               <SelectValue placeholder="Size নির্বাচন করুন" />
             </SelectTrigger>
             <SelectContent>
@@ -129,7 +120,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </Select>
         )}
 
-        <div className="flex items-center gap-1.5 mb-4">
+        <div className="flex items-center gap-1.5 mb-3">
           <span className={`w-1.5 h-1.5 rounded-full ${inStock ? 'bg-green-600' : 'bg-destructive'}`} />
           <p className={`text-xs font-medium ${inStock ? 'text-green-700' : 'text-destructive'}`}>
             {inStock ? 'স্টকে আছে' : 'স্টক নেই'}
@@ -139,7 +130,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <Button
           disabled={!inStock || addToCartMutation.isPending}
           onClick={handleAddToCart}
-          className="mt-auto w-full bg-[#1a3d1a] hover:bg-[#2a5a2a] text-white rounded-full shadow-sm transition-all duration-300 hover:scale-[1.02] disabled:hover:scale-100"
+          className="mt-auto w-full h-10 bg-[#1a3d1a] hover:bg-[#2a5a2a] text-white rounded-full shadow-sm transition-all duration-300"
         >
           {addToCartMutation.isPending ? (
             <Loader2 className="w-4 h-4 animate-spin" />

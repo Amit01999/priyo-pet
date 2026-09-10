@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { requireAuth } from '../../middlewares/requireAuth.js';
+import { uploadSingleImage } from '../../middlewares/upload.js';
 import * as productCtrl from '../../controllers/adminProduct.controller.js';
 import * as categoryCtrl from '../../controllers/adminCategory.controller.js';
 import * as orderCtrl from '../../controllers/adminShopOrder.controller.js';
@@ -13,6 +14,10 @@ router.use(requireAuth);
 
 router.get('/products', productCtrl.list);
 router.post('/products', productCtrl.create);
+// Registered before the /products/:id routes below — Express matches routes in registration
+// order, and ':id' would otherwise swallow the literal 'upload-image' segment.
+router.post('/products/upload-image', uploadSingleImage('image'), productCtrl.uploadImage);
+router.delete('/products/upload-image', productCtrl.removeUploadedImage);
 router.get('/products/:id', productCtrl.getById);
 router.patch('/products/:id', productCtrl.update);
 router.delete('/products/:id', productCtrl.remove);

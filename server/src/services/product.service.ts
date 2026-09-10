@@ -5,6 +5,7 @@ import { NotFound, Conflict } from '../errors/httpErrors.js';
 import { ERROR_CODES } from '../config/constants.js';
 import { buildPageResult, type PageResult } from '../utils/pagination.js';
 import { slugify } from '../utils/slug.js';
+import { deleteImage } from '../utils/cloudinary.js';
 import type {
   CreateProductInput,
   UpdateProductInput,
@@ -94,14 +95,27 @@ export async function createProduct(input: CreateProductInput): Promise<ProductD
 export async function updateProduct(id: string, input: UpdateProductInput): Promise<ProductDoc> {
   const patch: Record<string, unknown> = { ...input };
   if (input.slug) patch.slug = slugify(input.slug);
+
+  // Only need the "before" state when the image set is actually changing, to diff out
+  // whichever Cloudinary public_ids got dropped (e.g. an image replaced or removed in the editor).
+  const previous = input.imagePublicIds ? await Product.findById(id).lean<ProductDoc>() : null;
+
   const product = await Product.findByIdAndUpdate(id, { $set: patch }, { new: true }).lean<ProductDoc>();
   if (!product) throw NotFound('Product not found');
+
+  if (previous) {
+    const keptPublicIds = new Set(product.imagePublicIds ?? []);
+    const removedPublicIds = (previous.imagePublicIds ?? []).filter((pid) => pid && !keptPublicIds.has(pid));
+    await Promise.all(removedPublicIds.map((pid) => deleteImage(pid)));
+  }
+
   return product;
 }
 
 export async function deleteProduct(id: string): Promise<void> {
-  const result = await Product.findByIdAndDelete(id);
+  const result = await Product.findByIdAndDelete(id).lean<ProductDoc>();
   if (!result) throw NotFound('Product not found');
+  await Promise.all((result.imagePublicIds ?? []).map((pid) => deleteImage(pid)));
 }
 
 // --- Pricing/stock helpers shared by cart + order services ---

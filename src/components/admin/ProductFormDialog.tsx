@@ -21,6 +21,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import * as adminShopApi from '@/lib/api/adminShop.api';
 import { getApiErrorMessage } from '@/lib/api/client';
 import type { Category, Product } from '@/lib/api/types';
+import ProductImageUpload, { type ProductImageValue } from './ProductImageUpload';
+
+const productImageSchema = z.object({
+  url: z.string().trim().min(1),
+  publicId: z.string().trim(),
+});
 
 const variantSchema = z.object({
   label: z.string().trim().min(1, 'Variant label is required'),
@@ -34,7 +40,7 @@ const productFormSchema = z
     name: z.string().trim().min(1, 'Product name is required'),
     description: z.string().trim().optional(),
     categoryId: z.string().optional(),
-    imagesText: z.string().trim().optional(),
+    images: z.array(productImageSchema),
     hasVariants: z.boolean(),
     priceRegular: z.coerce.number().min(0).optional(),
     priceDiscounted: z.coerce.number().min(0).optional(),
@@ -70,7 +76,7 @@ const ProductFormDialog = ({ open, onOpenChange, product, categories }: ProductF
       name: '',
       description: '',
       categoryId: undefined,
-      imagesText: '',
+      images: [],
       hasVariants: false,
       priceRegular: undefined,
       priceDiscounted: undefined,
@@ -88,7 +94,7 @@ const ProductFormDialog = ({ open, onOpenChange, product, categories }: ProductF
         name: product?.name ?? '',
         description: product?.description ?? '',
         categoryId: product?.categoryId,
-        imagesText: product?.images.join('\n') ?? '',
+        images: product?.images.map((url, i) => ({ url, publicId: product.imagePublicIds?.[i] ?? '' })) ?? [],
         hasVariants: product?.hasVariants ?? false,
         priceRegular: product?.priceRegular,
         priceDiscounted: product?.priceDiscounted,
@@ -109,15 +115,12 @@ const ProductFormDialog = ({ open, onOpenChange, product, categories }: ProductF
 
   const mutation = useMutation({
     mutationFn: (values: ProductFormValues) => {
-      const images = (values.imagesText ?? '')
-        .split('\n')
-        .map((s) => s.trim())
-        .filter(Boolean);
       const payload = {
         name: values.name,
         description: values.description,
         categoryId: values.categoryId,
-        images,
+        images: values.images.map((img) => img.url),
+        imagePublicIds: values.images.map((img) => img.publicId).filter(Boolean),
         hasVariants: values.hasVariants,
         priceRegular: values.priceRegular,
         priceDiscounted: values.priceDiscounted,
@@ -203,12 +206,19 @@ const ProductFormDialog = ({ open, onOpenChange, product, categories }: ProductF
             />
             <FormField
               control={form.control}
-              name="imagesText"
+              name="images"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#1a3d1a]/70">Image URLs (one per line)</FormLabel>
+                  <FormLabel className="text-[#1a3d1a]/70">Product Image</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="https://..." className="min-h-[80px] rounded-xl border-[#1a3d1a]/15" {...field} />
+                    {/* react-hook-form's Zod-resolver typing loosens nested array-of-object
+                       fields to optional properties even though productImageSchema requires
+                       both; the actual form state is always fully populated. */}
+                    <ProductImageUpload
+                      value={field.value as ProductImageValue[]}
+                      onChange={field.onChange}
+                      disabled={mutation.isPending}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
