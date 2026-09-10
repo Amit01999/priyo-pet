@@ -70,7 +70,7 @@ const SHOP_NAV_ITEMS = [
 const NAV_LINK_BASE =
   'text-[#EFFDF0]/70 hover:bg-white/[0.06] hover:text-white rounded-xl transition-colors duration-200';
 const NAV_LINK_ACTIVE =
-  'bg-[#E86A10] text-white font-medium hover:bg-[#E86A10] hover:text-white';
+  'bg-[#E86A10] !text-white font-semibold shadow-sm hover:!bg-[#E86A10] hover:!text-white';
 
 const CampaignSelector = () => {
   const { campaigns, selectedSlug, setSelectedSlug, isLoading } =

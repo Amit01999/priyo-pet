@@ -91,7 +91,7 @@ const App = () => (
                   <Route path="login" element={<AdminLogin />} />
                   <Route element={<RequireAdminAuth />}>
                     <Route element={<AdminLayout />}>
-                      <Route index element={<Navigate to="dashboard" replace />} />
+                      <Route index element={<Navigate to="shop-dashboard" replace />} />
                       <Route path="dashboard" element={<AdminDashboard />} />
                       <Route path="appointments" element={<AdminAppointments />} />
                       <Route path="slots" element={<AdminSlots />} />
