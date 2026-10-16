@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { CalendarCheck, Calendar, Clock, Phone, MapPin, Stethoscope } from 'lucide-react';
+import { SERVICE_HOURS } from '@/config/serviceHours';
 
 const inputCls =
   'h-11 rounded-xl border-[#1a3d1a]/15 bg-[#F7FFF8]/60 focus-visible:ring-[#1a3d1a]/25 focus:border-[#1a3d1a]/40 transition-colors';
@@ -262,10 +263,13 @@ const BookingSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-[#1a3d1a] mb-1">Operating Hours</h4>
-                    <div className="text-[#1a3d1a]/60 space-y-1">
-                      <p>Monday - Saturday: 9:00 AM - 7:00 PM</p>
-                      <p>Sunday: 10:00 AM - 5:00 PM</p>
-                      <p className="text-[#E86A10] font-semibold">24/7 Emergency Services</p>
+                    <div className="text-[#1a3d1a]/60 space-y-1 leading-relaxed">
+                      {SERVICE_HOURS.map(({ day, hours, closed }) => (
+                        <p key={day} className={closed ? 'text-[#E86A10] font-semibold' : undefined}>
+                          <span className={closed ? undefined : 'font-medium text-[#1a3d1a]/80'}>{day}:</span>{' '}
+                          <span className="inline-block">{hours}</span>
+                        </p>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -282,9 +286,14 @@ const BookingSection = () => {
                 For urgent pet emergencies, call us immediately at:
               </p>
               <p className="text-2xl font-bold">01973-968669</p>
-              <p className="text-sm mt-2 text-white/80">
-                Available 24/7 for life-threatening situations
-              </p>
+              <div className="text-sm mt-3 text-white/80 space-y-0.5 leading-relaxed">
+                {SERVICE_HOURS.map(({ day, hours }) => (
+                  <p key={day}>
+                    <span className="font-semibold text-white">{day}:</span>{' '}
+                    <span className="inline-block">{hours}</span>
+                  </p>
+                ))}
+              </div>
             </div>
 
             {/* Map */}

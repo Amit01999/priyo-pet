@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Phone, MapPin, Clock } from 'lucide-react';
 import logo from '../../public/logo1.png';
+import { SERVICE_HOURS } from '@/config/serviceHours';
 
 const Footer = () => {
   const services = [
@@ -60,9 +61,16 @@ const Footer = () => {
                   <br /> Khulna, Bangladesh
                 </span>
               </div>
-              <div className="flex items-center gap-2.5 text-sm text-white/70">
-                <Clock className="w-4 h-4 text-[#E86A10] flex-shrink-0" />
-                <span>24/7 Emergency Services</span>
+              <div className="flex items-start gap-2.5 text-sm text-white/70">
+                <Clock className="w-4 h-4 text-[#E86A10] flex-shrink-0 mt-0.5" />
+                <div className="space-y-1 leading-relaxed">
+                  {SERVICE_HOURS.map(({ day, hours, closed }) => (
+                    <p key={day} className={closed ? 'text-[#E86A10] font-semibold' : undefined}>
+                      <span className={closed ? undefined : 'font-medium text-white/90'}>{day}:</span>{' '}
+                      <span className="inline-block">{hours}</span>
+                    </p>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

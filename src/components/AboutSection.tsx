@@ -1,12 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Check, Heart, Star, Users } from 'lucide-react';
+import { SERVICE_HOURS_SUMMARY } from '@/config/serviceHours';
 
 const AboutSection = () => {
   const values = [
     'Expert veterinary professionals with years of experience',
     'State-of-the-art medical equipment and facilities',
     "Compassionate care tailored to each pet's unique needs",
-    '24/7 emergency services for urgent situations',
+    SERVICE_HOURS_SUMMARY,
     'Comprehensive wellness and preventive care programs',
   ];
 

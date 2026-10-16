@@ -373,6 +373,8 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ArrowUpRight, Play, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import type { ReactNode } from 'react';
+import { SERVICE_HOURS_SHORT, SERVICE_HOURS_TITLE } from '@/config/serviceHours';
 
 /**
  * Exact image assets from the CozyPaws reference design, per explicit request.
@@ -406,7 +408,7 @@ const StatOverlay = ({
   animation,
 }: {
   value: string;
-  label: string;
+  label: ReactNode;
   withAvatars?: boolean;
   animation: string;
 }) => (
@@ -433,6 +435,16 @@ const StatOverlay = ({
       {label}
     </div>
   </div>
+);
+
+const ServiceHoursLines = () => (
+  <>
+    {SERVICE_HOURS_SHORT.map(({ day, hours }) => (
+      <span key={day} className="block leading-snug">
+        {day}: {hours}
+      </span>
+    ))}
+  </>
 );
 
 const HeroSection = () => {
@@ -629,8 +641,8 @@ const HeroSection = () => {
               />
               <div className="absolute " />
               <StatOverlay
-                value="24/7"
-                label="Emergency Care"
+                value={SERVICE_HOURS_TITLE}
+                label={<ServiceHoursLines />}
                 animation="animate-hero-scale-in delay-1200"
               />
             </div>
@@ -760,11 +772,8 @@ const HeroSection = () => {
             </div>
             <div className="w-px h-6 bg-[#1a3d1a]/15" />
             <div className="text-left leading-tight">
-              <div className="font-serif-display text-[#1a3d1a] text-sm leading-none">
-                24/7
-              </div>
-              <div className="text-[9px] text-[#1a3d1a]/60 font-medium">
-                Emergency Care
+              <div className="text-[10px] text-[#1a3d1a]/60 font-medium">
+                <ServiceHoursLines />
               </div>
             </div>
           </div>
